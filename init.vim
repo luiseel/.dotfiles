@@ -1,11 +1,3 @@
-" _       _ _         _
-"(_)_ __ (_) |___   _(_)_ __ ___
-"| | '_ \| | __\ \ / / | '_ ` _ \
-"| | | | | | |_ \ V /| | | | | | |
-"|_|_| |_|_|\__(_)_/ |_|_| |_| |_|
-"
-" author: <luis.94leel@gmail.com>
-
 " General
 set clipboard+=unnamed
 set mouse=a
