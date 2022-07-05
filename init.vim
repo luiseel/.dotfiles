@@ -37,10 +37,9 @@ nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
 nnoremap <leader>v <C-w>v
 nnoremap <leader>s <C-w>s
-nnoremap <leader>c :Config<CR>
 inoremap <C-e> <C-y>,
-nnoremap <leader>x :bd!<CR>
 
-nnoremap <leader>ff <cmd>Telescope find_files hidden=true<CR>
-nnoremap <leader>fb <cmd>Telescope buffers<CR>
-nnoremap <leader>fh <cmd>Telescope help_tags<CR>
+nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>fg <cmd>Telescope live_grep<cr>
+nnoremap <leader>fb <cmd>Telescope buffers<cr>
+nnoremap <leader>fh <cmd>Telescope help_tags<cr>
