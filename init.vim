@@ -61,14 +61,14 @@ require'nvim-treesitter.configs'.setup{
         "javascript",
         "java",
         "rust"
-        },
+    },
     highlight = {
         enable = true,
-        },
+    },
     indent = {
         enable = true
-        },
-    }
+    },
+}
 
 -- Loads lspconfig
 local nvim_lsp = require'lspconfig'
@@ -76,6 +76,7 @@ local nvim_lsp = require'lspconfig'
 nvim_lsp.tsserver.setup{
     on_attach = function()
        vim.keymap.set('n', 'K', vim.lsp.buf.hover, {buffer=0})
+       vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {buffer=0})
     end
 }
 EOF
