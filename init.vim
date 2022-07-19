@@ -8,11 +8,11 @@ set noswapfile
 set guicursor=
 set hidden
 set noerrorbells
-set scrolloff=24
 set smartcase
 set termguicolors
 set incsearch
 set nohlsearch
+set cc=80 
 
 " Plugins
 call plug#begin()
@@ -25,7 +25,10 @@ Plug 'editorconfig/editorconfig-vim'
 " Telescope and deps.
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-treesitter/nvim-treesitter'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+
+" LSP
+Plug 'neovim/nvim-lspconfig'
 call plug#end()
 
 " Mappings
@@ -37,9 +40,24 @@ nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
 nnoremap <leader>v <C-w>v
 nnoremap <leader>s <C-w>s
-inoremap <C-e> <C-y>,
+nnoremap <leader>e <cmd>Explore<cr>
 
-nnoremap <leader>ff <cmd>Telescope find_files<cr>
+nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
+
+lua <<EOF
+require'telescope'.setup{ defaults = { file_ignore_patterns = { '.git' } } }
+
+require'nvim-treesitter.configs'.setup{
+   ensure_installed = 'all',
+   highlight = {
+      enable = true,
+      additional_vim_regex_highlighting = false
+   },
+   indent = {
+      enable = true
+   }
+}
+EOF
