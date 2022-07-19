@@ -13,16 +13,18 @@ set termguicolors
 set incsearch
 set nohlsearch
 set cc=80 
+set expandtab
+set shiftwidth=4
 
 " Plugins
 call plug#begin()
-" Emmet for frontend development.
+" Emmet for frontend development
 Plug 'mattn/emmet-vim'
 
-" I <3 editorconfig.
+" I <3 editorconfig
 Plug 'editorconfig/editorconfig-vim'
 
-" Telescope and deps.
+" Telescope and deps
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -48,21 +50,32 @@ nnoremap <leader>fb <cmd>Telescope buffers<cr>
 nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 
 lua <<EOF
+-- Telescope config
 require'telescope'.setup{ defaults = { file_ignore_patterns = { '.git' } } }
 
+-- Treesitter config
 require'nvim-treesitter.configs'.setup{
-  ensure_installed = {
-    "typescript",
-    "lua",
-    "javascript",
-    "java",
-    "rust"
-  },
-  highlight = {
-     enable = true,
-  },
-  indent = {
-     enable = true
-  },
+    ensure_installed = {
+        "typescript",
+        "lua",
+        "javascript",
+        "java",
+        "rust"
+        },
+    highlight = {
+        enable = true,
+        },
+    indent = {
+        enable = true
+        },
+    }
+
+-- Loads lspconfig
+local nvim_lsp = require'lspconfig'
+
+nvim_lsp.tsserver.setup{
+    on_attach = function()
+       vim.keymap.set('n', 'K', vim.lsp.buf.hover, {buffer=0})
+    end
 }
 EOF
