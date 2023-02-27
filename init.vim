@@ -11,10 +11,12 @@ set noerrorbells
 set smartcase
 set incsearch
 set nohlsearch
-set cc=80 
 set expandtab
 set shiftwidth=4
 set nowrap
+set cursorline
+" set termguicolors
+set wildignore=node_modules/**,build/**,dist/**
 
 " Plugins
 call plug#begin()
@@ -25,16 +27,19 @@ Plug 'mattn/emmet-vim'
 Plug 'editorconfig/editorconfig-vim'
 
 " Telescope and deps
-Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " LSP
 Plug 'neovim/nvim-lspconfig'
 
+" Automatically make directories for new files
 Plug 'arp242/auto_mkdir2.vim'
  
+" Prettier for JavaScript or TypeScript development
 Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production' }
+
+Plug 'github/copilot.vim'
 call plug#end()
 
 " Mappings
@@ -64,7 +69,6 @@ require'nvim-treesitter.configs'.setup{
         "typescript",
         "lua",
         "javascript",
-        "java",
         "rust"
     },
     highlight = {
