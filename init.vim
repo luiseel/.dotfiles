@@ -27,6 +27,7 @@ Plug 'mattn/emmet-vim'
 Plug 'editorconfig/editorconfig-vim'
 
 " Telescope and deps
+Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
@@ -39,6 +40,7 @@ Plug 'arp242/auto_mkdir2.vim'
 " Prettier for JavaScript or TypeScript development
 Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production' }
 
+" Copilot
 Plug 'github/copilot.vim'
 call plug#end()
 
