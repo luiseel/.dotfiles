@@ -18,6 +18,10 @@ set cursorline
 " set termguicolors
 set wildignore=node_modules/**,build/**,dist/**
 
+" Fix by https://github.com/nvim-telescope/telescope.nvim/issues/2145
+hi NormalFloat ctermfg=LightGrey
+
+
 " Plugins
 call plug#begin()
 " Emmet for frontend development
@@ -42,6 +46,9 @@ Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --producti
 
 " Copilot
 Plug 'github/copilot.vim'
+
+Plug 'nvim-tree/nvim-tree.lua'
+Plug 'nvim-tree/nvim-web-devicons'
 call plug#end()
 
 " Mappings
@@ -53,7 +60,7 @@ nnoremap <leader>k <C-w>k
 nnoremap <leader>l <C-w>l
 nnoremap <leader>v <C-w>v
 nnoremap <leader>s <C-w>s
-nnoremap <leader>e <cmd>Explore<cr>
+nnoremap <leader>e <cmd>NvimTreeToggle<cr>
 nnoremap <leader>r <cmd>lua vim.lsp.buf.rename()<cr>
 
 nnoremap <leader>ff <cmd>Telescope find_files hidden=true<cr>
@@ -71,7 +78,8 @@ require'nvim-treesitter.configs'.setup{
         "typescript",
         "lua",
         "javascript",
-        "rust"
+        "rust",
+        "python"
     },
     highlight = {
         enable = true,
@@ -82,12 +90,35 @@ require'nvim-treesitter.configs'.setup{
 }
 
 -- Loads lspconfig
-local nvim_lsp = require'lspconfig'
-
-nvim_lsp.tsserver.setup{
+require'lspconfig'.tsserver.setup{
     on_attach = function()
        vim.keymap.set('n', 'K', vim.lsp.buf.hover, {buffer=0})
        vim.keymap.set('n', 'gd', vim.lsp.buf.definition, {buffer=0})
     end
 }
+
+require'lspconfig'.pyright.setup{}
+
+-- examples for your init.lua
+
+-- disable netrw at the very start of your init.lua (strongly advised)
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
+-- set termguicolors to enable highlight groups
+vim.opt.termguicolors = true
+
+-- empty setup using defaults
+require("nvim-tree").setup()
+
+-- OR setup with some options
+require("nvim-tree").setup({
+  sort_by = "case_sensitive",
+  renderer = {
+    group_empty = true,
+  },
+  filters = {
+    dotfiles = true,
+  },
+})
 EOF
