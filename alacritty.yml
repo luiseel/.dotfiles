@@ -1,7 +1,7 @@
 font:
   normal:
     family: Inconsolata Nerd Font Mono
-  size: 16
+  size: 14
 
 # Base16 PaperColor Dark 256 - alacritty color config
 # Jon Leopard (http://github.com/jonleopard) based on PaperColor Theme (https://github.com/NLKNguyen/papercolor-theme)
