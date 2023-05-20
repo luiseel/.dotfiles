@@ -2,3 +2,8 @@ font:
   normal:
     family: CodeNewRoman Nerd Font Mono
   size: 12
+
+cursor:
+  style:
+    blinking: Always
+    blink_interval: 250
