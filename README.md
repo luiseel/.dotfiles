@@ -4,6 +4,8 @@ I can factory reset my computer with confidence.
 
 ## Install
 
+Install [Packer](https://github.com/wbthomason/packer.nvim).
+
 Clone the repository.
 ```sh
 git clone https://github.com/luiseel/.dotfiles ~/.config/.dotfiles
@@ -22,4 +24,9 @@ chmod +x install.sh
 Execute install script.
 ```sh
 ./install.sh
+```
+
+Open neovim and sync plugins.
+```
+:PackerSync
 ```
