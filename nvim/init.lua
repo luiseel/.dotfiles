@@ -31,6 +31,8 @@ vim.keymap.set('n', '<leader>k', '<C-w>k')
 vim.keymap.set('n', '<leader>l', '<C-w>l')
 vim.keymap.set('n', '<leader>v', '<C-w>v')
 vim.keymap.set('n', '<leader>s', '<C-w>s')
+vim.keymap.set('n', '<leader>bn', ':bn<CR>')
+vim.keymap.set('n', '<leader>bm', ':bp<CR>')
 
 -- Remaps Telescope
 local builtin = require('telescope.builtin')
