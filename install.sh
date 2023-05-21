@@ -1,7 +1,13 @@
 #/bin/sh
 
-CONFIG_DIR=~/.config/.dotfiles
+CONFIG_DIR=~/.config
+ALACRITTY_DIR=~/.config/alacritty
+NVIM_DIR=~/.config/nvim
 
-ln -s $CONFIG_DIR/nvim ~/.config/nvim
-ln -s $CONFIG_DIR/alacritty.yml ~/.config/alacritty/alacritty.yml
-ln -s $CONFIG_DIR/.tmux.conf ~/.tmux.conf
+[ ! -d $CONFIG_DIR ] && mkdir $CONFIG_DIR
+[ ! -d $ALACRITTY_DIR ] && mkdir $ALACRITTY_DIR
+[ ! -d $NVIM_DIR ] && mkdir $NVIM_DIR
+
+cp -r ./nvim/* $NVIM_DIR
+cp ./alacritty.yml $ALACRITTY_DIR/alacritty.yml
+cp ./.tmux.conf ~/.tmux.conf
