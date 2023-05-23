@@ -33,6 +33,7 @@ vim.keymap.set('n', '<leader>v', '<C-w>v')
 vim.keymap.set('n', '<leader>s', '<C-w>s')
 vim.keymap.set('n', '<leader>bn', ':bn<CR>')
 vim.keymap.set('n', '<leader>bm', ':bp<CR>')
+vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeFindFileToggle<CR>')
 
 -- Remaps Telescope
 local builtin = require('telescope.builtin')
@@ -104,4 +105,14 @@ lualine.setup({
         options = {
                 theme = 'papercolor'
         }
+})
+
+require("nvim-tree").setup({
+        sort_by = "case_sensitive",
+        view = {
+                width = 40,
+        },
+        filters = {
+                dotfiles = true,
+        },
 })
