@@ -1,7 +1,7 @@
 require('plugins')
 
 -- Editor options
-vim.opt.clipboard = 'unnamed'
+-- vim.opt.clipboard = 'unnamed'
 vim.opt.rnu = true
 vim.opt.nu = true
 vim.opt.backup = false
