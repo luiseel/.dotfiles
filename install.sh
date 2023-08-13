@@ -8,7 +8,7 @@ NVIM_DIR=~/.config/nvim
 [ ! -d $ALACRITTY_DIR ] && mkdir $ALACRITTY_DIR
 [ ! -d $NVIM_DIR ] && mkdir $NVIM_DIR
 
-git clone https://github.com/catppuccin/alacritty.git ~/.config/alacritty/catppuccin
-ln -s nvim $CONFIG_DIR/nvim
-ln -s alacritty.yml $CONFIG_DIR/alacritty.yml
-ln -s .tmux.conf ~/.tmux.conf
+[ ! -d $ALACRITTY_DIR/catppuccin ] && git clone https://github.com/catppuccin/alacritty.git ~/.config/alacritty/catppuccin
+ln -s $(pwd)/nvim/* $CONFIG_DIR/nvim
+ln -s $(pwd)/alacritty.yml $ALACRITTY_DIR/alacritty.yml
+ln -s $(pwd)/.tmux.conf ~/.tmux.conf
