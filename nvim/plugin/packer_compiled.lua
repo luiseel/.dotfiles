@@ -79,6 +79,11 @@ _G.packer_plugins = {
     path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/LuaSnip",
     url = "https://github.com/L3MON4D3/LuaSnip"
   },
+  catppuccin = {
+    loaded = true,
+    path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/catppuccin",
+    url = "https://github.com/catppuccin/nvim"
+  },
   ["cmp-nvim-lsp"] = {
     loaded = true,
     path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/cmp-nvim-lsp",
@@ -144,11 +149,6 @@ _G.packer_plugins = {
     path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/packer.nvim",
     url = "https://github.com/wbthomason/packer.nvim"
   },
-  ["papercolor-theme"] = {
-    loaded = true,
-    path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/papercolor-theme",
-    url = "https://github.com/NLKNguyen/papercolor-theme"
-  },
   playground = {
     loaded = true,
     path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/playground",
@@ -163,6 +163,11 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/telescope.nvim",
     url = "https://github.com/nvim-telescope/telescope.nvim"
+  },
+  ["vim-jsx-improve"] = {
+    loaded = true,
+    path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/vim-jsx-improve",
+    url = "https://github.com/neoclide/vim-jsx-improve"
   },
   ["vim-prettier"] = {
     loaded = true,

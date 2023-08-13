@@ -1,9 +1,15 @@
+import:
+  - ~/.config/alacritty/catppuccin/catppuccin-macchiato.yml
+
 font:
   normal:
-    family: Lekton Nerd Font Mono
+    family: Inconsolata Nerd Font Mono
   size: 14
 
 cursor:
   style:
     blinking: Always
     blink_interval: 250
+
+env:
+  TERM: xterm-256color

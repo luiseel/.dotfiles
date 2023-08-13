@@ -18,7 +18,7 @@ vim.opt.wrap = false
 vim.opt.expandtab = true
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = '80'
-vim.cmd [[colorscheme PaperColor]]
+vim.cmd.colorscheme "catppuccin-macchiato"
 
 -- Remaps
 vim.g.mapleader = ' '
@@ -54,7 +54,7 @@ require'nvim-treesitter.configs'.setup {
                 'typescript',
                 'rust',
                 'yaml',
-                'json'
+                'json',
         },
         sync_install = false,
         auto_install = true,
