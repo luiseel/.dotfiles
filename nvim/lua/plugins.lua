@@ -9,7 +9,6 @@ return require('packer').startup(function(use)
                 'nvim-telescope/telescope.nvim', tag = '0.1.1',
                 requires = { {'nvim-lua/plenary.nvim'} }
         }
-        use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
         use {
                 'VonHeikemen/lsp-zero.nvim',
                 branch = 'v2.x',
@@ -27,7 +26,6 @@ return require('packer').startup(function(use)
                         {'L3MON4D3/LuaSnip'},
                 }
         }
-        use('nvim-treesitter/playground')
         use('mattn/emmet-vim')
         use('github/copilot.vim')
         use {
@@ -38,5 +36,8 @@ return require('packer').startup(function(use)
         use('nvim-tree/nvim-web-devicons')
         use('prettier/vim-prettier', {run = 'yarn install --forzen-lockfile --production'})
         use('neoclide/vim-jsx-improve')
-        use { "catppuccin/nvim", as = "catppuccin" }
+        use {
+                'nvim-treesitter/nvim-treesitter',
+                run = ':TSUpdate'
+        }
 end)
