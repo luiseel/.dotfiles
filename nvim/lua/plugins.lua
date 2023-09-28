@@ -40,5 +40,6 @@ return require('packer').startup(function(use)
                 'nvim-treesitter/nvim-treesitter',
                 run = ':TSUpdate'
         }
-        use('overcache/NeoSolarized')
+        use { "catppuccin/nvim", as = "catppuccin" }
+        use { "norcalli/nvim-colorizer.lua" }
 end)

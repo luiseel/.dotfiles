@@ -18,7 +18,7 @@ vim.opt.wrap = false
 vim.opt.expandtab = true
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = '80'
-vim.cmd [[colorscheme NeoSolarized]]
+vim.cmd [[colorscheme catppuccin-latte]]
 
 -- Remaps
 vim.g.mapleader = ' '
@@ -116,3 +116,5 @@ require("nvim-tree").setup({
                 dotfiles = false,
         },
 })
+
+require'colorizer'.setup()

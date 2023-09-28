@@ -1,7 +1,9 @@
+import:
+  - ~/.config/alacritty/catppuccin/catppuccin-latte.yml
 font:
   normal:
     family: Inconsolata Nerd Font Mono
-  size: 14
+  size: 16
 
 cursor:
   style:
