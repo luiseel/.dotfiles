@@ -55,6 +55,7 @@ require'nvim-treesitter.configs'.setup {
                 'rust',
                 'yaml',
                 'json',
+                'prisma'
         },
         sync_install = false,
         auto_install = true,
