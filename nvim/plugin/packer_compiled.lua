@@ -159,6 +159,12 @@ _G.packer_plugins = {
     path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/plenary.nvim",
     url = "https://github.com/nvim-lua/plenary.nvim"
   },
+  ["solarized.nvim"] = {
+    config = { "\27LJ\2\n`\0\0\3\0\a\0\n6\0\0\0009\0\1\0'\1\3\0=\1\2\0006\0\0\0009\0\4\0009\0\5\0'\2\6\0B\0\2\1K\0\1\0\14solarized\16colorscheme\bcmd\nlight\15background\6o\bvim\0" },
+    loaded = true,
+    path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/solarized.nvim",
+    url = "https://github.com/maxmx03/solarized.nvim"
+  },
   ["telescope.nvim"] = {
     loaded = true,
     path = "/Users/luisespinozalarios/.local/share/nvim/site/pack/packer/start/telescope.nvim",
@@ -177,6 +183,10 @@ _G.packer_plugins = {
 }
 
 time([[Defining packer_plugins]], false)
+-- Config for: solarized.nvim
+time([[Config for solarized.nvim]], true)
+try_loadstring("\27LJ\2\n`\0\0\3\0\a\0\n6\0\0\0009\0\1\0'\1\3\0=\1\2\0006\0\0\0009\0\4\0009\0\5\0'\2\6\0B\0\2\1K\0\1\0\14solarized\16colorscheme\bcmd\nlight\15background\6o\bvim\0", "config", "solarized.nvim")
+time([[Config for solarized.nvim]], false)
 
 _G._packer.inside_compile = false
 if _G._packer.needs_bufread == true then

@@ -40,6 +40,13 @@ return require('packer').startup(function(use)
                 'nvim-treesitter/nvim-treesitter',
                 run = ':TSUpdate'
         }
-        use { "catppuccin/nvim", as = "catppuccin" }
+        -- use { "catppuccin/nvim", as = "catppuccin" }
         use { "norcalli/nvim-colorizer.lua" }
+        use {
+                'maxmx03/solarized.nvim',
+                config = function()
+                        vim.o.background = 'light' -- or 'light'
+                        vim.cmd.colorscheme 'solarized'
+                end
+        }
 end)
