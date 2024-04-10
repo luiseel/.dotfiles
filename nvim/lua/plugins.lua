@@ -44,7 +44,7 @@ return require('packer').startup(function(use)
         use {
                 'maxmx03/solarized.nvim',
                 config = function()
-                        vim.o.background = 'dark' -- or 'light'
+                        vim.o.background = 'light' -- or 'light'
                         vim.cmd.colorscheme 'solarized'
                 end
         }
