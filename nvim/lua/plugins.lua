@@ -41,10 +41,19 @@ return require('packer').startup(function(use)
                 run = ':TSUpdate'
         }
         use { "norcalli/nvim-colorizer.lua" }
+        -- use({
+        --           'projekt0n/github-nvim-theme',
+        --           config = function()
+        --             require('github-theme').setup({})
+        --             vim.cmd('colorscheme github_dark')
+        --           end
+        -- })
+
         use {
                 'maxmx03/solarized.nvim',
-                config = function()
+                 config = function()
                         vim.o.background = 'light' -- or 'light'
+
                         vim.cmd.colorscheme 'solarized'
                 end
         }
