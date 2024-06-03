@@ -18,6 +18,8 @@ vim.opt.wrap = false
 vim.opt.expandtab = true
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = '80'
+vim.cmd[[colorscheme nord]]
+vim.g.nord_borders = false
 
 -- Remaps
 vim.g.mapleader = ' '
@@ -103,7 +105,7 @@ lsp.setup()
 local lualine = require('lualine')
 lualine.setup({
         options = {
-                theme = 'papercolor'
+                theme = 'nord'
         }
 })
 

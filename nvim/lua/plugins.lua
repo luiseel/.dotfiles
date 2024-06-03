@@ -49,12 +49,20 @@ return require('packer').startup(function(use)
         --           end
         -- })
 
-        use {
-                'maxmx03/solarized.nvim',
-                 config = function()
-                        vim.o.background = 'light' -- or 'light'
+        -- use {
+        --         'maxmx03/solarized.nvim',
+        --          config = function()
+        --                 vim.o.background = 'dark'
 
-                        vim.cmd.colorscheme 'solarized'
-                end
-        }
+        --                 vim.cmd.colorscheme 'solarized'
+        --         end
+        -- }
+        -- use {
+        --         'ribru17/bamboo.nvim',
+        --         config = function()
+        --                require('bamboo').setup()
+        --                require('bamboo').load()
+        --         end
+        -- }
+        use 'shaunsingh/nord.nvim'
 end)
