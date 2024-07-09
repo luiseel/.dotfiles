@@ -64,5 +64,17 @@ return require('packer').startup(function(use)
         --                require('bamboo').load()
         --         end
         -- }
-        use 'shaunsingh/nord.nvim'
+        use {
+                "loctvl842/monokai-pro.nvim",
+                config = function()
+                        require("monokai-pro").setup()
+                end
+        }
+        use { 
+                "gbprod/nord.nvim",
+                config = function()
+                        require('nord').setup()
+                        vim.cmd.colorscheme('nord')
+                end
+        }
 end)
