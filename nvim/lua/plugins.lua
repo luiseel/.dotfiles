@@ -41,6 +41,7 @@ return require('packer').startup(function(use)
                 run = ':TSUpdate'
         }
         use { "norcalli/nvim-colorizer.lua" }
+        use { "rose-pine/neovim", as = "rose-pine" }
         -- use({
         --           'projekt0n/github-nvim-theme',
         --           config = function()
@@ -64,17 +65,17 @@ return require('packer').startup(function(use)
         --                require('bamboo').load()
         --         end
         -- }
-        use {
-                "loctvl842/monokai-pro.nvim",
-                config = function()
-                        require("monokai-pro").setup()
-                end
-        }
-        use { 
-                "gbprod/nord.nvim",
-                config = function()
-                        require('nord').setup()
-                        vim.cmd.colorscheme('nord')
-                end
-        }
+        -- use {
+        --         "loctvl842/monokai-pro.nvim",
+        --         config = function()
+        --                 require("monokai-pro").setup()
+        --         end
+        -- }
+        -- use { 
+        --         "gbprod/nord.nvim",
+        --         config = function()
+        --                 require('nord').setup()
+        --                 vim.cmd.colorscheme('nord')
+        --         end
+        -- }
 end)

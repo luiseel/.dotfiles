@@ -18,6 +18,7 @@ vim.opt.wrap = false
 vim.opt.expandtab = true
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = '80'
+vim.cmd('colorscheme rose-pine-dawn')
 
 -- Remaps
 vim.g.mapleader = ' '
@@ -100,10 +101,9 @@ require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
 
 lsp.setup()
 
-local lualine = require('lualine')
-lualine.setup({
+require('lualine').setup({
         options = {
-                theme = 'nord'
+                theme = 'rose-pine-dawn'
         }
 })
 
