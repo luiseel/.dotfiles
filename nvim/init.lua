@@ -18,7 +18,7 @@ vim.opt.wrap = false
 vim.opt.expandtab = true
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = '80'
-vim.cmd('colorscheme rose-pine-dawn')
+vim.cmd('colorscheme rose-pine-moon')
 
 -- Remaps
 vim.g.mapleader = ' '

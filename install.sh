@@ -13,4 +13,4 @@ ln -sf $(pwd)/.tmux.conf ~/.tmux.conf
 
 git clone https://github.com/rose-pine/kitty.git $KITTY_DIR/themes
 ln -sf $(pwd)/kitty/kitty.conf $KITTY_DIR/kitty.conf
-ln -sf $KITTY_DIR/themes/dist/rose-pine-dawn.conf $KITTY_DIR/theme.conf
+ln -sf $KITTY_DIR/themes/dist/rose-pine-moon.conf $KITTY_DIR/theme.conf
