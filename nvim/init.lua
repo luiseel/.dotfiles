@@ -18,7 +18,12 @@ vim.opt.wrap = false
 vim.opt.expandtab = true
 vim.opt.updatetime = 50
 vim.opt.colorcolumn = '80'
-vim.cmd('colorscheme rose-pine-moon')
+vim.opt.textwidth = 0
+vim.opt.wrapmargin = 0
+vim.cmd('colorscheme rose-pine-dawn')
+vim.opt.ttimeoutlen = 10
+vim.o.list = true
+vim.o.listchars = 'tab:»·,trail:·,extends:→,precedes:←,nbsp:␣'
 
 -- Remaps
 vim.g.mapleader = ' '
@@ -34,6 +39,7 @@ vim.keymap.set('n', '<leader>s', '<C-w>s')
 vim.keymap.set('n', '<leader>bn', ':bn<CR>')
 vim.keymap.set('n', '<leader>bm', ':bp<CR>')
 vim.keymap.set('n', '<leader>e', '<cmd>NvimTreeFindFileToggle<CR>')
+vim.keymap.set('n', '<leader>=', '<C-w>=')
 
 -- Remaps Telescope
 local builtin = require('telescope.builtin')
@@ -71,7 +77,7 @@ local lsp = require('lsp-zero')
 lsp.preset('recommended')
 
 lsp.ensure_installed({
-        'tsserver',
+        'ts_ls',
         'eslint',
 })
 
