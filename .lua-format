@@ -1,0 +1,4 @@
+column_limit: 120
+align_args: false
+break_after_functioncall_lp: true
+break_before_functioncall_rp: true
