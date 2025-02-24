@@ -58,7 +58,7 @@ vim.keymap.set('n', '<leader>=', '<C-w>=')
 require("lazy").setup(
     {
       spec = {
-        "neoclide/vim-jsx-improve", "nvim-tree/nvim-web-devicons", "github/copilot.vim", "mattn/emmet-vim",
+        "neoclide/vim-jsx-improve", "nvim-tree/nvim-web-devicons", "github/copilot.vim", "mattn/emmet-vim", "shaunsingh/solarized.nvim",
         {'neovim/nvim-lspconfig'}, {'hrsh7th/cmp-nvim-lsp'}, {'hrsh7th/nvim-cmp'}, {import = "plugins"}
       }
     }
