@@ -6,11 +6,7 @@ vim.opt.signcolumn = 'yes'
 
 -- Add cmp_nvim_lsp capabilities settings to lspconfig
 -- This should be executed before you configure any language server
-local lspconfig_defaults = require('lspconfig').util.default_config
-lspconfig_defaults.capabilities = vim.tbl_deep_extend(
-                                      'force', lspconfig_defaults.capabilities,
-                                          require('cmp_nvim_lsp').default_capabilities()
-                                  )
+local default_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
 -- This is where you enable features that only work
 -- if there is a language server active in the file
@@ -54,15 +50,28 @@ cmp.setup(
     }
 )
 
-require('lspconfig').lua_ls.setup(
-    {
-      settings = {
-        Lua = {
-          diagnostics = {globals = {'vim'}},
-          workspace = {library = vim.api.nvim_get_runtime_file("", true), checkThirdParty = false}
-        }
-      }
+vim.lsp.config('lua_ls', {
+  cmd = {'lua-language-server'},
+  root_markers = {'.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git'},
+  capabilities = default_capabilities,
+  settings = {
+    Lua = {
+      diagnostics = {globals = {'vim'}},
+      workspace = {library = vim.api.nvim_get_runtime_file("", true), checkThirdParty = false}
     }
-)
-require('lspconfig').ts_ls.setup({})
-require('lspconfig').eslint.setup({})
+  }
+})
+
+vim.lsp.config('ts_ls', {
+  cmd = {'typescript-language-server', '--stdio'},
+  root_markers = {'tsconfig.json', 'jsconfig.json', 'package.json', '.git'},
+  capabilities = default_capabilities,
+})
+
+vim.lsp.config('eslint', {
+  cmd = {'vscode-eslint-language-server', '--stdio'},
+  root_markers = {'.eslintrc', '.eslintrc.js', '.eslintrc.json', 'eslint.config.js', 'package.json', '.git'},
+  capabilities = default_capabilities,
+})
+
+vim.lsp.enable({'lua_ls', 'ts_ls', 'eslint'})
