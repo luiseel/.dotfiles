@@ -16,7 +16,7 @@ git clone https://github.com/luiseel/.dotfiles ~/.config/.dotfiles
 cd ~/.config/.dotfiles
 ```
 
-Run stow to install the dotfiles.
+Run stow.
 
 ```sh
 stow --no-folding -t ~ nvim tmux
