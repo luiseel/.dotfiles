@@ -1,6 +1,12 @@
 # .dotfiles
 
-These are just my dotfiles. Feel free to use them.
+My dotfiles. Feel free to use them. 😉
+
+## Requirements
+
+- [stow](https://www.gnu.org/software/stow/)
+- [ripgrep](https://github.com/BurntSushi/ripgrep)
+- [git](https://git-scm.com/)
 
 ## Install
 
