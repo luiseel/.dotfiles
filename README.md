@@ -19,5 +19,5 @@ cd ~/.config/.dotfiles
 Run stow to install the dotfiles.
 
 ```sh
-stow --no-folding -t ~ -R .
+stow --no-folding -t ~ nvim tmux
 ```
