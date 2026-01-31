@@ -16,14 +16,8 @@ git clone https://github.com/luiseel/.dotfiles ~/.config/.dotfiles
 cd ~/.config/.dotfiles
 ```
 
-Add execution permission to install script.
+Run stow to install the dotfiles.
 
 ```sh
-chmod +x install.sh
-```
-
-Execute install script.
-
-```sh
-./install.sh
+stow --no-folding -t ~ -R .
 ```

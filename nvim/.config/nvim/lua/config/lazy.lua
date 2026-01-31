@@ -39,6 +39,7 @@ vim.opt.wrapmargin = 0
 vim.opt.ttimeoutlen = 10
 vim.o.list = true
 vim.o.listchars = 'tab:»·,trail:·,extends:→,precedes:←,nbsp:␣'
+vim.opt.autoread = true
 
 -- Remaps
 vim.g.mapleader = ' '
