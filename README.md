@@ -7,6 +7,9 @@ My dotfiles. Feel free to use them. 😉
 - [stow](https://www.gnu.org/software/stow/)
 - [ripgrep](https://github.com/BurntSushi/ripgrep)
 - [git](https://git-scm.com/)
+- [tmux](https://tmux.github.io/)
+- [tpm](https://github.com/tmux-plugins/tpm)
+- [neovim](https://neovim.io/)
 
 ## Install
 
