@@ -1,0 +1,34 @@
+[user]
+	name = Luis Espinoza
+	email = 79593471+luiseel@users.noreply.github.com
+	signingkey = E1161A02BB557E62
+
+[core]
+	pager = delta
+
+[interactive]
+	difffilter = delta --color-only
+
+[delta]
+	navigate = true
+	dark = true
+
+[merge]
+	conflictstyle = zdiff3
+
+[alias]
+	ic = commit -m "initial commit"
+	fuck = reset HEAD~1
+	wip = commit -m "wip"
+	rs = restore --staged
+	fix = commit -m "fix"
+	alias = config --get-regexp ^alias\\.
+	ckt = checkout
+	st = status --short
+	lg = log --graph --oneline --decorate --all --color
+
+[commit]
+	gpgsign = true
+
+[tag]
+	gpgsign = true

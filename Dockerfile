@@ -19,10 +19,10 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Neovim stable (v0.11.6)
-RUN curl -LO https://github.com/neovim/neovim/releases/download/v0.11.6/nvim-linux-arm64.tar.gz \
-    && tar -C /opt -xzf nvim-linux-arm64.tar.gz \
-    && rm nvim-linux-arm64.tar.gz \
-    && ln -s /opt/nvim-linux-arm64/bin/nvim /usr/local/bin/nvim
+RUN curl -LO https://github.com/neovim/neovim/releases/download/v0.11.6/nvim-linux-x86_64.tar.gz \
+    && tar -C /opt -xzf nvim-linux-x86_64.tar.gz \
+    && rm nvim-linux-x86_64.tar.gz \
+    && ln -s /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
 
 # Create a non-root user (optional)
 RUN useradd -m -s /bin/bash developer
@@ -38,7 +38,7 @@ RUN mkdir -p ~/.config
 COPY --chown=developer:developer . /home/developer/.dotfiles
 
 # Stow the dotfiles
-RUN cd ~/.dotfiles && stow --no-folding -t ~ nvim tmux
+RUN cd ~/.dotfiles && stow --no-folding -t ~ nvim tmux git
 
 # Note: neovim plugins will install automatically on first run
 # We skip installing during build because lazy.nvim configs may
