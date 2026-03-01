@@ -1,17 +1,18 @@
 return {
   "nvim-treesitter/nvim-treesitter",
-  tag = "v0.10.0",
   build = ":TSUpdate",
   config = function()
-    local configs = require("nvim-treesitter")
+    local configs = require("nvim-treesitter.configs")
     configs.setup(
         {
           ensure_installed = {
-            'c', 'lua', 'vim', 'vimdoc', 'query', 'javascript', 'typescript', 'rust', 'yaml', 'json', 'prisma', 'tsx', 'zig', 'java'
+            'c', 'lua', 'vim', 'vimdoc', 'query', 'javascript', 'typescript', 'rust', 'yaml', 'json', 'prisma', 'tsx',
+            'zig', 'java'
           },
           sync_install = false,
           auto_install = true,
-          highlight = {indent = true, enable = true, additional_vim_regex_highlighting = false}
+          highlight = {enable = true, additional_vim_regex_highlighting = false},
+          indent = {enable = true}
         }
     )
   end
