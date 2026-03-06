@@ -1,6 +1,6 @@
 # .dotfiles
 
-My dotfiles. Feel free to use them. 😉
+My personal configs.
 
 ## Requirements
 
