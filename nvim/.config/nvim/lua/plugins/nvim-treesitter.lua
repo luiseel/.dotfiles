@@ -7,7 +7,7 @@ return {
         {
           ensure_installed = {
             'c', 'lua', 'vim', 'vimdoc', 'query', 'javascript', 'typescript', 'rust', 'yaml', 'json', 'prisma', 'tsx',
-            'zig', 'java'
+            'zig', 'java', 'vue', 'css', 'scss'
           },
           sync_install = false,
           auto_install = true,

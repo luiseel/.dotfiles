@@ -62,10 +62,35 @@ vim.lsp.config('lua_ls', {
   }
 })
 
+local npm_global_root = vim.fn.system('npm root -g'):gsub('\n', '')
+
+local vue_plugin = {
+  name = '@vue/typescript-plugin',
+  location = npm_global_root .. '/@vue/language-server',
+  languages = {'vue'},
+  configNamespace = 'typescript',
+}
+
 vim.lsp.config('ts_ls', {
   cmd = {'typescript-language-server', '--stdio'},
   root_markers = {'tsconfig.json', 'jsconfig.json', 'package.json', '.git'},
   capabilities = default_capabilities,
+  filetypes = {'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx', 'vue'},
+  init_options = {
+    plugins = {vue_plugin},
+  },
+})
+
+vim.lsp.config('vue_ls', {
+  cmd = {'vue-language-server', '--stdio'},
+  filetypes = {'vue'},
+  root_markers = {'package.json', '.git'},
+  capabilities = default_capabilities,
+  init_options = {
+    typescript = {
+      tsdk = npm_global_root .. '/typescript/lib',
+    },
+  },
 })
 
 vim.lsp.config('eslint', {
@@ -74,4 +99,4 @@ vim.lsp.config('eslint', {
   capabilities = default_capabilities,
 })
 
-vim.lsp.enable({'lua_ls', 'ts_ls', 'eslint'})
+vim.lsp.enable({'lua_ls', 'ts_ls', 'eslint', 'vue_ls'})
