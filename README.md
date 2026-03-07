@@ -10,6 +10,7 @@ My personal configs.
 - [git](https://git-scm.com/)
 - [tmux](https://tmux.github.io/)
 - [tpm](https://github.com/tmux-plugins/tpm)
+- [ghostty](https://ghostty.org/)
 - [neovim](https://neovim.io/)
 - [Node.js](https://nodejs.org/) + npm
 - [yarn](https://yarnpkg.com/)
@@ -45,5 +46,5 @@ Run the install script (supports macOS and Ubuntu).
 If you prefer to install dependencies yourself, link the dotfiles with stow:
 
 ```sh
-stow --no-folding -t ~ nvim tmux
+stow --no-folding -t ~ ghostty nvim tmux
 ```
