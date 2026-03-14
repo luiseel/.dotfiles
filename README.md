@@ -18,7 +18,6 @@ My personal configs.
 - [typescript-language-server](https://github.com/typescript-language-server/typescript-language-server)
 - [vue-language-server](https://github.com/vuejs/language-tools)
 - [vscode-langservers-extracted](https://github.com/hrsh7th/vscode-langservers-extracted) (eslint)
-- [jdtls](https://github.com/eclipse-jdtls/eclipse.jdt.ls) (optional, for Java)
 - [luaformatter](https://github.com/Koihik/LuaFormatter)
 
 ## Install

@@ -7,6 +7,15 @@ vim.opt.signcolumn = 'yes'
 -- Add cmp_nvim_lsp capabilities settings to lspconfig
 -- This should be executed before you configure any language server
 local default_capabilities = require('cmp_nvim_lsp').default_capabilities()
+local java_ok, java = pcall(require, 'java')
+
+if java_ok then
+  java.setup({
+    spring_boot_tools = {
+      enable = false,
+    },
+  })
+end
 
 -- This is where you enable features that only work
 -- if there is a language server active in the file
@@ -99,4 +108,8 @@ vim.lsp.config('eslint', {
   capabilities = default_capabilities,
 })
 
-vim.lsp.enable({'lua_ls', 'ts_ls', 'eslint', 'vue_ls'})
+vim.lsp.config('jdtls', {
+  capabilities = default_capabilities,
+})
+
+vim.lsp.enable({'lua_ls', 'ts_ls', 'eslint', 'vue_ls', 'jdtls'})

@@ -46,7 +46,6 @@ install_macos() {
     node
     yarn
     lua-language-server
-    jdtls
     luaformatter
   )
 
@@ -122,12 +121,6 @@ install_ubuntu() {
     info "lua-format is already installed"
   fi
 
-  # jdtls
-  if ! command_exists jdtls; then
-    warn "jdtls is not installed. Install it manually or via Mason in Neovim."
-  else
-    info "jdtls is already installed"
-  fi
 }
 
 install_npm_packages() {
@@ -183,6 +176,7 @@ main() {
   echo ""
   info "Installation complete!"
   info "Open Neovim and Treesitter parsers will be installed automatically."
+  info "Open a Java file and nvim-java will install its managed Java tooling."
   info "Run 'tmux' and press prefix + I to install tmux plugins."
 }
 
