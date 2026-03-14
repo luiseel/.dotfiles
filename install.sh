@@ -173,6 +173,7 @@ run_checks() {
   check_command "git" git
   check_command "tmux" tmux
   check_command "neovim (nvim)" nvim
+  check_command "cmake" cmake
   check_command "lua-language-server" lua-language-server
   check_command "luaformatter (lua-format)" lua-format
 
@@ -225,6 +226,7 @@ install_macos() {
     fd
     git
     tmux
+    cmake
     lua-language-server
     luarocks
   )
@@ -266,6 +268,7 @@ install_ubuntu() {
     fd-find
     git
     tmux
+    cmake
     curl
     build-essential
   )
