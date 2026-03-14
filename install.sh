@@ -11,6 +11,48 @@ info() { echo -e "${GREEN}[INFO]${NC} $1"; }
 warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
+ACTION="install"
+INSTALL_NODE_DEPS=true
+
+check_missing_count=0
+
+usage() {
+  cat <<'EOF'
+Usage: ./install.sh [check] [--skip-node]
+
+Options:
+  --skip-node  Skip Node.js, Yarn, and global npm package installation.
+  -h, --help   Show this help message.
+
+Commands:
+  check        Report installed and missing dependencies without installing.
+EOF
+}
+
+parse_args() {
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      install)
+        ACTION="install"
+        ;;
+      check)
+        ACTION="check"
+        ;;
+      --skip-node)
+        INSTALL_NODE_DEPS=false
+        ;;
+      -h|--help)
+        usage
+        exit 0
+        ;;
+      *)
+        error "Unknown option: $1"
+        ;;
+    esac
+    shift
+  done
+}
+
 detect_os() {
   case "$(uname -s)" in
     Darwin) echo "macos" ;;
@@ -26,6 +68,146 @@ detect_os() {
 }
 
 command_exists() { command -v "$1" &>/dev/null; }
+
+check_ok() { echo -e "${GREEN}[OK]${NC} $1"; }
+
+check_missing() {
+  check_missing_count=$((check_missing_count + 1))
+  echo -e "${RED}[MISSING]${NC} $1"
+}
+
+check_note() { echo -e "${YELLOW}[NOTE]${NC} $1"; }
+
+check_command() {
+  local label="$1"
+  local cmd="$2"
+
+  if command_exists "$cmd"; then
+    check_ok "$label"
+  else
+    check_missing "$label"
+  fi
+}
+
+check_any_command() {
+  local label="$1"
+  shift
+
+  for cmd in "$@"; do
+    if command_exists "$cmd"; then
+      check_ok "$label"
+      return
+    fi
+  done
+
+  check_missing "$label"
+}
+
+check_npm_package() {
+  local package="$1"
+
+  if ! command_exists npm; then
+    check_missing "$package"
+    return
+  fi
+
+  if npm list -g --depth=0 "$package" &>/dev/null; then
+    check_ok "$package"
+  else
+    check_missing "$package"
+  fi
+}
+
+check_linked_path() {
+  local label="$1"
+  local path="$2"
+
+  if [ -L "$path" ]; then
+    check_ok "$label linked at $path"
+  elif [ -e "$path" ]; then
+    check_note "$label exists at $path but is not symlinked"
+  else
+    check_missing "$label missing at $path"
+  fi
+}
+
+check_directory() {
+  local label="$1"
+  local path="$2"
+
+  if [ -d "$path" ]; then
+    check_ok "$label"
+  else
+    check_missing "$label"
+  fi
+}
+
+check_ghostty_app() {
+  local os="$1"
+
+  if command_exists ghostty; then
+    check_ok "Ghostty app"
+    return
+  fi
+
+  if [ "$os" = "macos" ]; then
+    if [ -d "/Applications/Ghostty.app" ] || [ -d "$HOME/Applications/Ghostty.app" ]; then
+      check_ok "Ghostty app"
+    else
+      check_note "Ghostty app not found (optional, installed manually)"
+    fi
+    return
+  fi
+
+  check_note "Ghostty app not found (optional, installed manually)"
+}
+
+run_checks() {
+  local os="$1"
+  check_missing_count=0
+
+  info "Checking core dependencies..."
+  check_command "stow" stow
+  check_command "ripgrep (rg)" rg
+  check_any_command "fd" fd fdfind
+  check_command "git" git
+  check_command "tmux" tmux
+  check_command "neovim (nvim)" nvim
+  check_command "lua-language-server" lua-language-server
+  check_command "luaformatter (lua-format)" lua-format
+
+  echo ""
+  info "Checking Node.js dependencies..."
+  if [ "$INSTALL_NODE_DEPS" = true ]; then
+    check_command "Node.js" node
+    check_command "npm" npm
+    check_command "Yarn" yarn
+    check_npm_package "typescript"
+    check_npm_package "typescript-language-server"
+    check_npm_package "@vue/language-server"
+    check_npm_package "vscode-langservers-extracted"
+  else
+    check_note "Skipping Node.js dependency checks (--skip-node)"
+  fi
+
+  echo ""
+  info "Checking optional/manual dependencies..."
+  check_ghostty_app "$os"
+
+  echo ""
+  info "Checking local setup..."
+  check_linked_path "Ghostty config" "$HOME/.config/ghostty/config.ghostty"
+  check_linked_path "Neovim config" "$HOME/.config/nvim/init.lua"
+  check_linked_path "tmux config" "$HOME/.tmux.conf"
+  check_directory "TPM" "$HOME/.tmux/plugins/tpm"
+
+  echo ""
+  if [ "$check_missing_count" -eq 0 ]; then
+    info "All required checks passed."
+  else
+    warn "$check_missing_count required checks are missing."
+  fi
+}
 
 install_macos() {
   if ! command_exists brew; then
@@ -43,11 +225,18 @@ install_macos() {
     fd
     git
     tmux
-    node
-    yarn
     lua-language-server
-    luaformatter
+    luarocks
   )
+
+  if [ "$INSTALL_NODE_DEPS" = true ]; then
+    packages+=(
+      node
+      yarn
+    )
+  else
+    info "Skipping Node.js and Yarn installation"
+  fi
 
   for pkg in "${packages[@]}"; do
     if brew list "$pkg" &>/dev/null; then
@@ -57,6 +246,13 @@ install_macos() {
       brew install "$pkg"
     fi
   done
+
+  if ! command_exists lua-format; then
+    info "Installing luaformatter via LuaRocks..."
+    luarocks install --server=https://luarocks.org/dev luaformatter
+  else
+    info "lua-format is already installed"
+  fi
 }
 
 install_ubuntu() {
@@ -86,21 +282,25 @@ install_ubuntu() {
     info "Neovim is already installed"
   fi
 
-  # Node.js via NodeSource
-  if ! command_exists node; then
-    info "Installing Node.js..."
-    curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
-    sudo apt-get install -y nodejs
-  else
-    info "Node.js is already installed"
-  fi
+  if [ "$INSTALL_NODE_DEPS" = true ]; then
+    # Node.js via NodeSource
+    if ! command_exists node; then
+      info "Installing Node.js..."
+      curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+      sudo apt-get install -y nodejs
+    else
+      info "Node.js is already installed"
+    fi
 
-  # Yarn
-  if ! command_exists yarn; then
-    info "Installing Yarn..."
-    sudo npm install -g yarn
+    # Yarn
+    if ! command_exists yarn; then
+      info "Installing Yarn..."
+      sudo npm install -g yarn
+    else
+      info "Yarn is already installed"
+    fi
   else
-    info "Yarn is already installed"
+    info "Skipping Node.js and Yarn installation"
   fi
 
   # Lua language server
@@ -124,6 +324,11 @@ install_ubuntu() {
 }
 
 install_npm_packages() {
+  if [ "$INSTALL_NODE_DEPS" != true ]; then
+    info "Skipping global npm package installation"
+    return
+  fi
+
   info "Installing global npm packages..."
   local packages=(
     typescript
@@ -148,7 +353,13 @@ setup_dotfiles() {
 
   info "Linking dotfiles with stow..."
   cd "$dotfiles_dir"
-  stow --no-folding -t ~ nvim tmux
+  local packages=(
+    ghostty
+    nvim
+    tmux
+  )
+
+  stow --no-folding -t ~ "${packages[@]}"
 
   # Install tmux plugin manager
   local tpm_dir="$HOME/.tmux/plugins/tpm"
@@ -173,9 +384,16 @@ setup_neovim_plugins() {
 }
 
 main() {
+  parse_args "$@"
+
   local os
   os="$(detect_os)"
   info "Detected OS: $os"
+
+  if [ "$ACTION" = "check" ]; then
+    run_checks "$os"
+    return
+  fi
 
   case "$os" in
     macos) install_macos ;;

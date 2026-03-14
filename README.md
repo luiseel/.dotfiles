@@ -10,7 +10,7 @@ My personal configs.
 - [git](https://git-scm.com/)
 - [tmux](https://tmux.github.io/)
 - [tpm](https://github.com/tmux-plugins/tpm)
-- [ghostty](https://ghostty.org/)
+- [ghostty](https://ghostty.org/) (optional, app install is manual; config is stowed via XDG)
 - [neovim](https://neovim.io/)
 - [Node.js](https://nodejs.org/) + npm
 - [yarn](https://yarnpkg.com/)
@@ -19,6 +19,7 @@ My personal configs.
 - [vue-language-server](https://github.com/vuejs/language-tools)
 - [vscode-langservers-extracted](https://github.com/hrsh7th/vscode-langservers-extracted) (eslint)
 - [luaformatter](https://github.com/Koihik/LuaFormatter)
+- [luarocks](https://luarocks.org/) (used by the macOS installer for LuaFormatter)
 
 ## Install
 
@@ -40,6 +41,18 @@ Run the install script (supports macOS and Ubuntu).
 ./install.sh
 ```
 
+To check what is already installed:
+
+```sh
+./install.sh check
+```
+
+To skip Node.js, Yarn, and global npm packages:
+
+```sh
+./install.sh --skip-node
+```
+
 The installer also bootstraps Neovim plugins with `lazy.nvim`.
 
 ### Manual setup
@@ -49,6 +62,8 @@ If you prefer to install dependencies yourself, link the dotfiles with stow:
 ```sh
 stow --no-folding -t ~ ghostty nvim tmux
 ```
+
+Ghostty config is stored at `~/.config/ghostty/config.ghostty`.
 
 Then bootstrap Neovim plugins once:
 
