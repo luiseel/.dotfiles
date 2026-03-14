@@ -2,7 +2,15 @@ return {
   "nvim-treesitter/nvim-treesitter",
   build = ":TSUpdate",
   config = function()
-    local configs = require("nvim-treesitter.configs")
+    local ok, configs = pcall(require, "nvim-treesitter.configs")
+    if not ok then
+      vim.notify(
+        "nvim-treesitter is not available. Run ':Lazy sync' to reinstall plugins.",
+        vim.log.levels.ERROR
+      )
+      return
+    end
+
     configs.setup(
         {
           ensure_installed = {

@@ -40,6 +40,8 @@ Run the install script (supports macOS and Ubuntu).
 ./install.sh
 ```
 
+The installer also bootstraps Neovim plugins with `lazy.nvim`.
+
 ### Manual setup
 
 If you prefer to install dependencies yourself, link the dotfiles with stow:
@@ -47,3 +49,11 @@ If you prefer to install dependencies yourself, link the dotfiles with stow:
 ```sh
 stow --no-folding -t ~ ghostty nvim tmux
 ```
+
+Then bootstrap Neovim plugins once:
+
+```sh
+nvim --headless "+Lazy! sync" +qa
+```
+
+If `nvim-treesitter.configs` is missing on a fresh machine, the local plugin checkout is incomplete. Run `:Lazy sync` inside Neovim or rerun the headless command above.

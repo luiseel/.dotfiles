@@ -160,6 +160,18 @@ setup_dotfiles() {
   fi
 }
 
+setup_neovim_plugins() {
+  if ! command_exists nvim; then
+    warn "Neovim is not installed. Skipping plugin bootstrap."
+    return
+  fi
+
+  info "Bootstrapping Neovim plugins with lazy.nvim..."
+  if ! nvim --headless "+Lazy! sync" +qa; then
+    warn "Neovim plugin bootstrap failed. Open Neovim and run ':Lazy sync' to inspect the error."
+  fi
+}
+
 main() {
   local os
   os="$(detect_os)"
@@ -172,10 +184,11 @@ main() {
 
   install_npm_packages
   setup_dotfiles
+  setup_neovim_plugins
 
   echo ""
   info "Installation complete!"
-  info "Open Neovim and Treesitter parsers will be installed automatically."
+  info "Treesitter parsers and other Neovim plugins were bootstrapped during install."
   info "Open a Java file and nvim-java will install its managed Java tooling."
   info "Run 'tmux' and press prefix + I to install tmux plugins."
 }
