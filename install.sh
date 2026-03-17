@@ -123,11 +123,34 @@ check_linked_path() {
   local path="$2"
 
   if [ -L "$path" ]; then
-    check_ok "$label linked at $path"
+    if [ -e "$path" ]; then
+      check_ok "$label linked at $path"
+    else
+      check_missing "$label has a broken symlink at $path"
+    fi
   elif [ -e "$path" ]; then
     check_note "$label exists at $path but is not symlinked"
   else
     check_missing "$label missing at $path"
+  fi
+}
+
+check_no_broken_symlinks() {
+  local label="$1"
+  local path="$2"
+  local broken_links
+
+  if [ ! -d "$path" ]; then
+    check_missing "$label missing at $path"
+    return
+  fi
+
+  broken_links="$(find "$path" -type l ! -exec test -e {} \; -print)"
+
+  if [ -n "$broken_links" ]; then
+    check_missing "$label has broken symlinks:\n$broken_links"
+  else
+    check_ok "$label has no broken symlinks"
   fi
 }
 
@@ -199,6 +222,7 @@ run_checks() {
   info "Checking local setup..."
   check_linked_path "Ghostty config" "$HOME/.config/ghostty/config.ghostty"
   check_linked_path "Neovim config" "$HOME/.config/nvim/init.lua"
+  check_no_broken_symlinks "Neovim config directory" "$HOME/.config/nvim"
   check_linked_path "tmux config" "$HOME/.tmux.conf"
   check_directory "TPM" "$HOME/.tmux/plugins/tpm"
 
@@ -362,7 +386,7 @@ setup_dotfiles() {
     tmux
   )
 
-  stow --no-folding -t ~ "${packages[@]}"
+  stow --restow --no-folding -t ~ "${packages[@]}"
 
   # Install tmux plugin manager
   local tpm_dir="$HOME/.tmux/plugins/tpm"
