@@ -1,6 +1,1 @@
-return {
-  "nvim-java/nvim-java",
-  dependencies = {
-    "neovim/nvim-lspconfig",
-  },
-}
+return {"nvim-java/nvim-java", dependencies = {"neovim/nvim-lspconfig"}}

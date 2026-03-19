@@ -2,10 +2,15 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
   local lazyrepo = "https://github.com/folke/lazy.nvim.git"
-  local out = vim.fn.system({"git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath})
+  local out = vim.fn.system(
+                  {"git", "clone", "--filter=blob:none", "--branch=stable", lazyrepo, lazypath}
+              )
   if vim.v.shell_error ~= 0 then
     vim.api.nvim_echo(
-        {{"Failed to clone lazy.nvim:\n", "ErrorMsg"}, {out, "WarningMsg"}, {"\nPress any key to exit..."}}, true, {}
+        {
+          {"Failed to clone lazy.nvim:\n", "ErrorMsg"}, {out, "WarningMsg"},
+          {"\nPress any key to exit..."}
+        }, true, {}
     )
     vim.fn.getchar()
     os.exit(1)
@@ -59,8 +64,9 @@ vim.keymap.set('n', '<leader>=', '<C-w>=')
 require("lazy").setup(
     {
       spec = {
-        "neoclide/vim-jsx-improve", "nvim-tree/nvim-web-devicons", "mattn/emmet-vim", "shaunsingh/solarized.nvim",
-        {'neovim/nvim-lspconfig'}, {'hrsh7th/cmp-nvim-lsp'}, {'hrsh7th/nvim-cmp'}, {import = "plugins"}
+        "neoclide/vim-jsx-improve", "nvim-tree/nvim-web-devicons", "mattn/emmet-vim",
+        "shaunsingh/solarized.nvim", {'neovim/nvim-lspconfig'}, {'hrsh7th/cmp-nvim-lsp'},
+        {'hrsh7th/nvim-cmp'}, {import = "plugins"}
       }
     }
 )

@@ -1,5 +1,15 @@
-column_limit: 120
+column_limit: 100
 indent_width: 2
-align_args: false
+use_tab: false
+continuation_indent_width: 4
+
 break_after_functioncall_lp: true
 break_before_functioncall_rp: true
+
+align_args: true
+align_parameter: true
+
+spaces_before_call: 1
+spaces_inside_functioncall_parens: false
+
+keep_simple_function_one_line: true

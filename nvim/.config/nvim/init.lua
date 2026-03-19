@@ -9,13 +9,7 @@ vim.opt.signcolumn = 'yes'
 local default_capabilities = require('cmp_nvim_lsp').default_capabilities()
 local java_ok, java = pcall(require, 'java')
 
-if java_ok then
-  java.setup({
-    spring_boot_tools = {
-      enable = false,
-    },
-  })
-end
+if java_ok then java.setup({spring_boot_tools = {enable = false}}) end
 
 -- This is where you enable features that only work
 -- if there is a language server active in the file
@@ -59,17 +53,22 @@ cmp.setup(
     }
 )
 
-vim.lsp.config('lua_ls', {
-  cmd = {'lua-language-server'},
-  root_markers = {'.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml', 'selene.yml', '.git'},
-  capabilities = default_capabilities,
-  settings = {
-    Lua = {
-      diagnostics = {globals = {'vim'}},
-      workspace = {library = vim.api.nvim_get_runtime_file("", true), checkThirdParty = false}
+vim.lsp.config(
+    'lua_ls', {
+      cmd = {'lua-language-server'},
+      root_markers = {
+        '.luarc.json', '.luarc.jsonc', '.luacheckrc', '.stylua.toml', 'stylua.toml', 'selene.toml',
+        'selene.yml', '.git'
+      },
+      capabilities = default_capabilities,
+      settings = {
+        Lua = {
+          diagnostics = {globals = {'vim'}},
+          workspace = {library = vim.api.nvim_get_runtime_file("", true), checkThirdParty = false}
+        }
+      }
     }
-  }
-})
+)
 
 local npm_global_root = vim.fn.system('npm root -g'):gsub('\n', '')
 
@@ -77,39 +76,42 @@ local vue_plugin = {
   name = '@vue/typescript-plugin',
   location = npm_global_root .. '/@vue/language-server',
   languages = {'vue'},
-  configNamespace = 'typescript',
+  configNamespace = 'typescript'
 }
 
-vim.lsp.config('ts_ls', {
-  cmd = {'typescript-language-server', '--stdio'},
-  root_markers = {'tsconfig.json', 'jsconfig.json', 'package.json', '.git'},
-  capabilities = default_capabilities,
-  filetypes = {'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx', 'vue'},
-  init_options = {
-    plugins = {vue_plugin},
-  },
-})
+vim.lsp.config(
+    'ts_ls', {
+      cmd = {'typescript-language-server', '--stdio'},
+      root_markers = {'tsconfig.json', 'jsconfig.json', 'package.json', '.git'},
+      capabilities = default_capabilities,
+      filetypes = {
+        'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact',
+        'typescript.tsx', 'vue'
+      },
+      init_options = {plugins = {vue_plugin}}
+    }
+)
 
-vim.lsp.config('vue_ls', {
-  cmd = {'vue-language-server', '--stdio'},
-  filetypes = {'vue'},
-  root_markers = {'package.json', '.git'},
-  capabilities = default_capabilities,
-  init_options = {
-    typescript = {
-      tsdk = npm_global_root .. '/typescript/lib',
-    },
-  },
-})
+vim.lsp.config(
+    'vue_ls', {
+      cmd = {'vue-language-server', '--stdio'},
+      filetypes = {'vue'},
+      root_markers = {'package.json', '.git'},
+      capabilities = default_capabilities,
+      init_options = {typescript = {tsdk = npm_global_root .. '/typescript/lib'}}
+    }
+)
 
-vim.lsp.config('eslint', {
-  cmd = {'vscode-eslint-language-server', '--stdio'},
-  root_markers = {'.eslintrc', '.eslintrc.js', '.eslintrc.json', 'eslint.config.js', 'package.json', '.git'},
-  capabilities = default_capabilities,
-})
+vim.lsp.config(
+    'eslint', {
+      cmd = {'vscode-eslint-language-server', '--stdio'},
+      root_markers = {
+        '.eslintrc', '.eslintrc.js', '.eslintrc.json', 'eslint.config.js', 'package.json', '.git'
+      },
+      capabilities = default_capabilities
+    }
+)
 
-vim.lsp.config('jdtls', {
-  capabilities = default_capabilities,
-})
+vim.lsp.config('jdtls', {capabilities = default_capabilities})
 
 vim.lsp.enable({'lua_ls', 'ts_ls', 'eslint', 'vue_ls', 'jdtls'})
