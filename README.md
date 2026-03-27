@@ -9,9 +9,10 @@ My personal configs.
 - [fd](https://github.com/sharkdp/fd)
 - [git](https://git-scm.com/)
 - [tmux](https://tmux.github.io/)
-- [tpm](https://github.com/tmux-plugins/tpm)
 - [ghostty](https://ghostty.org/) (optional, app install is manual; config is stowed via XDG)
 - [neovim](https://neovim.io/)
+- [cmake](https://cmake.org/)
+- [delta](https://github.com/dandavison/delta) (used as git pager)
 - [Node.js](https://nodejs.org/) + npm
 - [yarn](https://yarnpkg.com/)
 - [lua-language-server](https://github.com/LuaLS/lua-language-server)
@@ -19,7 +20,7 @@ My personal configs.
 - [vue-language-server](https://github.com/vuejs/language-tools)
 - [vscode-langservers-extracted](https://github.com/hrsh7th/vscode-langservers-extracted) (eslint)
 - [luaformatter](https://github.com/Koihik/LuaFormatter)
-- [luarocks](https://luarocks.org/) (used by the macOS installer for LuaFormatter)
+- [luarocks](https://luarocks.org/) (macOS only, used to install LuaFormatter)
 
 ## Install
 
