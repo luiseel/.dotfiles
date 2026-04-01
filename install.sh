@@ -165,6 +165,17 @@ check_directory() {
   fi
 }
 
+check_executable() {
+  local label="$1"
+  local path="$2"
+
+  if [ -x "$path" ]; then
+    check_ok "$label"
+  else
+    check_missing "$label missing or not executable at $path"
+  fi
+}
+
 check_ghostty_app() {
   local os="$1"
 
@@ -224,7 +235,7 @@ run_checks() {
   check_linked_path "Neovim config" "$HOME/.config/nvim/init.lua"
   check_no_broken_symlinks "Neovim config directory" "$HOME/.config/nvim"
   check_linked_path "tmux config" "$HOME/.tmux.conf"
-  check_directory "TPM" "$HOME/.tmux/plugins/tpm"
+  check_executable "TPM" "$HOME/.tmux/plugins/tpm/tpm"
 
   echo ""
   if [ "$check_missing_count" -eq 0 ]; then
@@ -390,11 +401,23 @@ setup_dotfiles() {
 
   # Install tmux plugin manager
   local tpm_dir="$HOME/.tmux/plugins/tpm"
-  if [ ! -d "$tpm_dir" ]; then
+  local tpm_bin="$tpm_dir/tpm"
+  if [ ! -x "$tpm_bin" ]; then
     info "Installing TPM (Tmux Plugin Manager)..."
+    if [ -d "$tpm_dir" ]; then
+      error "TPM directory exists but $tpm_bin is missing. Remove $tpm_dir and rerun ./install.sh."
+    fi
+
+    mkdir -p "$(dirname "$tpm_dir")"
     git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+
+    if [ ! -x "$tpm_bin" ]; then
+      error "TPM clone completed but $tpm_bin is still missing or not executable."
+    fi
+
+    info "TPM installed at $tpm_bin"
   else
-    info "TPM is already installed"
+    info "TPM is already installed at $tpm_bin"
   fi
 }
 

@@ -84,9 +84,10 @@ vim.lsp.config(
       cmd = {'typescript-language-server', '--stdio'},
       root_markers = {'tsconfig.json', 'jsconfig.json', 'package.json', '.git'},
       capabilities = default_capabilities,
+      -- Let vue_ls own .vue buffers to avoid raw TypeScript diagnostics on SFC markup.
       filetypes = {
         'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact',
-        'typescript.tsx', 'vue'
+        'typescript.tsx'
       },
       init_options = {plugins = {vue_plugin}}
     }
