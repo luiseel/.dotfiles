@@ -1,10 +1,14 @@
-FROM ubuntu:24.04
+FROM ubuntu:24.04 AS base
+
+ARG TARGETARCH
 
 # Avoid prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install essential tools
 RUN apt-get update && apt-get install -y \
+    ca-certificates \
+    sudo \
     git \
     curl \
     wget \
@@ -15,17 +19,36 @@ RUN apt-get update && apt-get install -y \
     ripgrep \
     fd-find \
     fzf \
+    nodejs \
+    npm \
     tmux \
     && rm -rf /var/lib/apt/lists/*
 
+RUN ln -sf /usr/bin/fdfind /usr/local/bin/fd
+
+RUN npm install -g \
+    yarn \
+    typescript \
+    typescript-language-server \
+    @vue/language-server \
+    vscode-langservers-extracted
+
 # Install Neovim stable (v0.11.6)
-RUN curl -LO https://github.com/neovim/neovim/releases/download/v0.11.6/nvim-linux-x86_64.tar.gz \
-    && tar -C /opt -xzf nvim-linux-x86_64.tar.gz \
-    && rm nvim-linux-x86_64.tar.gz \
-    && ln -s /opt/nvim-linux-x86_64/bin/nvim /usr/local/bin/nvim
+RUN case "$TARGETARCH" in \
+      amd64) nvim_arch="x86_64" ;; \
+      arm64) nvim_arch="arm64" ;; \
+      *) echo "Unsupported TARGETARCH: $TARGETARCH" >&2; exit 1 ;; \
+    esac \
+    && curl -LO "https://github.com/neovim/neovim/releases/download/v0.11.6/nvim-linux-${nvim_arch}.tar.gz" \
+    && tar -C /opt -xzf "nvim-linux-${nvim_arch}.tar.gz" \
+    && rm "nvim-linux-${nvim_arch}.tar.gz" \
+    && ln -s "/opt/nvim-linux-${nvim_arch}/bin/nvim" /usr/local/bin/nvim
 
 # Create a non-root user (optional)
-RUN useradd -m -s /bin/bash developer
+RUN useradd -m -s /bin/bash developer \
+    && mkdir -p /etc/sudoers.d \
+    && echo 'developer ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/developer \
+    && chmod 0440 /etc/sudoers.d/developer
 
 # Switch to that user
 USER developer
@@ -40,9 +63,17 @@ COPY --chown=developer:developer . /home/developer/.dotfiles
 # Stow the dotfiles
 RUN cd ~/.dotfiles && stow --no-folding -t ~ nvim tmux git
 
-# Note: neovim plugins will install automatically on first run
-# We skip installing during build because lazy.nvim configs may
-# reference unloaded plugins, causing errors in headless mode
+FROM base AS verify
+
+RUN tmux -f /home/developer/.tmux.conf start-server
+RUN cd /home/developer/.dotfiles && ./install.sh
+RUN test -x /home/developer/.tmux/plugins/tpm/tpm
+RUN XDG_STATE_HOME=/tmp/nvim-state XDG_CACHE_HOME=/tmp/nvim-cache \
+    nvim --headless -i NONE \
+    '+lua dofile("/home/developer/.config/nvim/init.lua"); assert(not vim.tbl_contains(vim.lsp.config.ts_ls.filetypes, "vue"), "ts_ls should not attach to vue"); assert(vim.tbl_contains(vim.lsp.config.vue_ls.filetypes, "vue"), "vue_ls must attach to vue")' \
+    +qa
+
+FROM base AS dev
 
 # Set up default shell
 ENV SHELL=/bin/bash

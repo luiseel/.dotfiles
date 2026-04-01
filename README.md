@@ -56,6 +56,20 @@ To skip Node.js, Yarn, and global npm packages:
 
 The installer also bootstraps Neovim plugins with `lazy.nvim`.
 
+## Docker verification
+
+Build the `verify` target to test the Ubuntu bootstrap path in a container.
+
+```sh
+docker build --target verify -t dotfiles-verify .
+```
+
+That target checks that:
+
+- tmux can start with this config before TPM is installed
+- `./install.sh` provisions TPM in the expected path
+- the Neovim LSP config keeps `ts_ls` off `.vue` buffers while `vue_ls` owns them
+
 ### Manual setup
 
 If you prefer to install dependencies yourself, link the dotfiles with stow:
