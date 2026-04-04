@@ -84,10 +84,9 @@ vim.lsp.config(
       cmd = {'typescript-language-server', '--stdio'},
       root_markers = {'tsconfig.json', 'jsconfig.json', 'package.json', '.git'},
       capabilities = default_capabilities,
-      -- Let vue_ls own .vue buffers to avoid raw TypeScript diagnostics on SFC markup.
       filetypes = {
         'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact',
-        'typescript.tsx'
+        'typescript.tsx', 'vue'
       },
       init_options = {plugins = {vue_plugin}}
     }
@@ -115,4 +114,4 @@ vim.lsp.config(
 
 vim.lsp.config('jdtls', {capabilities = default_capabilities})
 
-vim.lsp.enable({'lua_ls', 'ts_ls', 'eslint', 'vue_ls', 'jdtls'})
+vim.lsp.enable({'lua_ls', 'ts_ls', 'vue_ls', 'eslint', 'jdtls'})
