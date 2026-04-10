@@ -9,19 +9,7 @@ return {
     require('telescope').load_extension('fzf')
     local builtin = require('telescope.builtin')
 
-    -- Default (clean)
-    vim.keymap.set(
-        'n', '<leader>ff', function()
-          builtin.find_files(
-              {
-                hidden = true, -- show dotfiles
-                file_ignore_patterns = { "%.git/" }
-              }
-          )
-        end, {}
-    )
-
-    -- Full (includes gitignored files)
+    -- Full find files (includes gitignored files) - use <leader>fF for telescope fallback
     vim.keymap.set(
         'n', '<leader>fF', function()
           builtin.find_files(
@@ -30,15 +18,6 @@ return {
                 no_ignore = true -- include .gitignore
               }
           )
-        end, {}
-    )
-
-    -- live_grep also needs config separately
-    vim.keymap.set(
-        'n', '<leader>fg', function()
-          builtin.live_grep({additional_args = function()
-            return {"--hidden", "--glob", "!.git/"}
-          end})
         end, {}
     )
 
