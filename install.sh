@@ -245,6 +245,63 @@ run_checks() {
   fi
 }
 
+NEOVIM_VERSION="0.11.7"
+
+install_neovim() {
+  local current_version
+  if command_exists nvim; then
+    current_version=$(nvim --version | head -1 | sed 's/NVIM v//')
+    if [ "$current_version" = "$NEOVIM_VERSION" ]; then
+      info "Neovim v$NEOVIM_VERSION is already installed"
+      return
+    fi
+    info "Neovim v$current_version found, upgrading to v$NEOVIM_VERSION..."
+  else
+    info "Installing Neovim v$NEOVIM_VERSION..."
+  fi
+
+  local os
+  os=$(uname -s)
+  local arch
+  arch=$(uname -m)
+  local url filename
+
+  if [ "$os" = "Darwin" ]; then
+    if [ "$arch" = "arm64" ]; then
+      filename="nvim-macos-arm64.tar.gz"
+    else
+      filename="nvim-macos-x86_64.tar.gz"
+    fi
+  elif [ "$os" = "Linux" ]; then
+    if [ "$arch" = "aarch64" ]; then
+      filename="nvim-linux-arm64.tar.gz"
+    else
+      filename="nvim-linux-x86_64.tar.gz"
+    fi
+  else
+    error "Unsupported OS: $os"
+  fi
+
+  url="https://github.com/neovim/neovim/releases/download/v${NEOVIM_VERSION}/${filename}"
+
+  local tmpdir
+  tmpdir=$(mktemp -d)
+  info "Downloading Neovim v$NEOVIM_VERSION..."
+  curl -fsSL "$url" -o "$tmpdir/$filename"
+  tar -xzf "$tmpdir/$filename" -C "$tmpdir"
+
+  local extracted_dir
+  extracted_dir=$(find "$tmpdir" -maxdepth 1 -type d -name 'nvim-*' | head -1)
+
+  info "Installing Neovim to /usr/local..."
+  sudo cp -r "$extracted_dir"/bin/* /usr/local/bin/
+  sudo cp -r "$extracted_dir"/lib/* /usr/local/lib/
+  sudo cp -r "$extracted_dir"/share/* /usr/local/share/
+
+  rm -rf "$tmpdir"
+  info "Neovim v$NEOVIM_VERSION installed successfully"
+}
+
 install_macos() {
   if ! command_exists brew; then
     error "Homebrew is required. Install it from https://brew.sh"
@@ -256,7 +313,6 @@ install_macos() {
   info "Installing system packages..."
   local packages=(
     stow
-    neovim
     ripgrep
     fd
     git
@@ -284,6 +340,9 @@ install_macos() {
     fi
   done
 
+  # Neovim (download release binary)
+  install_neovim
+
   if ! command_exists lua-format; then
     info "Installing luaformatter via LuaRocks..."
     luarocks install --server=https://luarocks.org/dev luaformatter
@@ -310,15 +369,8 @@ install_ubuntu() {
 
   sudo apt-get install -y "${packages[@]}"
 
-  # Neovim (stable PPA for latest version)
-  if ! command_exists nvim; then
-    info "Installing Neovim..."
-    sudo add-apt-repository -y ppa:neovim-ppa/stable
-    sudo apt-get update
-    sudo apt-get install -y neovim
-  else
-    info "Neovim is already installed"
-  fi
+  # Neovim (download release binary)
+  install_neovim
 
   if [ "$INSTALL_NODE_DEPS" = true ]; then
     # Node.js via NodeSource
