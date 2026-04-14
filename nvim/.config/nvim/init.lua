@@ -115,3 +115,15 @@ vim.lsp.config(
 vim.lsp.config('jdtls', {capabilities = default_capabilities})
 
 vim.lsp.enable({'lua_ls', 'ts_ls', 'vue_ls', 'eslint', 'jdtls'})
+
+vim.api.nvim_create_autocmd(
+    "FileType", {
+      pattern = {"text", "markdown", "mail", "adoc"},
+      callback = function()
+        vim.opt_local.wrap = true
+        vim.opt_local.textwidth = 80
+        vim.opt_local.formatoptions:append('t') -- Hard wrap
+        vim.opt_local.formatoptions:append('a') -- Auto-format (optional)
+      end
+    }
+)
