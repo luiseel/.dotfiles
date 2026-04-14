@@ -33,13 +33,13 @@ RUN npm install -g \
     @vue/language-server \
     vscode-langservers-extracted
 
-# Install Neovim stable (v0.11.6)
+# Install Neovim stable (v0.11.7)
 RUN case "$TARGETARCH" in \
       amd64) nvim_arch="x86_64" ;; \
       arm64) nvim_arch="arm64" ;; \
       *) echo "Unsupported TARGETARCH: $TARGETARCH" >&2; exit 1 ;; \
     esac \
-    && curl -LO "https://github.com/neovim/neovim/releases/download/v0.11.6/nvim-linux-${nvim_arch}.tar.gz" \
+    && curl -LO "https://github.com/neovim/neovim/releases/download/v0.11.7/nvim-linux-${nvim_arch}.tar.gz" \
     && tar -C /opt -xzf "nvim-linux-${nvim_arch}.tar.gz" \
     && rm "nvim-linux-${nvim_arch}.tar.gz" \
     && ln -s "/opt/nvim-linux-${nvim_arch}/bin/nvim" /usr/local/bin/nvim
@@ -60,13 +60,14 @@ RUN mkdir -p ~/.config
 # Copy dotfiles (you can bind mount instead)
 COPY --chown=developer:developer . /home/developer/.dotfiles
 
-# Stow the dotfiles
-RUN cd ~/.dotfiles && stow --no-folding -t ~ nvim tmux git
+# Link dotfiles and bootstrap plugins
+RUN cd ~/.dotfiles && ./dot apply
 
 FROM base AS verify
 
-RUN tmux -f /home/developer/.tmux.conf start-server
-RUN cd /home/developer/.dotfiles && ./install.sh
+COPY --chown=developer:developer . /home/developer/.dotfiles
+RUN cd ~/.dotfiles && ./dot install --dry-run
+RUN cd ~/.dotfiles && ./dot apply
 RUN test -x /home/developer/.tmux/plugins/tpm/tpm
 RUN XDG_STATE_HOME=/tmp/nvim-state XDG_CACHE_HOME=/tmp/nvim-cache \
     nvim --headless -i NONE \

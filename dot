@@ -11,46 +11,23 @@ info() { echo -e "${GREEN}[INFO]${NC} $1"; }
 warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
-ACTION="install"
 INSTALL_NODE_DEPS=true
 
 check_missing_count=0
 
 usage() {
   cat <<'EOF'
-Usage: ./install.sh [check] [--skip-node]
-
-Options:
-  --skip-node  Skip Node.js, Yarn, and global npm package installation.
-  -h, --help   Show this help message.
+Usage: ./dot <command> [options]
 
 Commands:
-  check        Report installed and missing dependencies without installing.
-EOF
-}
+  install            Install all dependencies, link dotfiles, and bootstrap plugins.
+  apply              Link dotfiles with stow and bootstrap Neovim plugins.
 
-parse_args() {
-  while [ "$#" -gt 0 ]; do
-    case "$1" in
-      install)
-        ACTION="install"
-        ;;
-      check)
-        ACTION="check"
-        ;;
-      --skip-node)
-        INSTALL_NODE_DEPS=false
-        ;;
-      -h|--help)
-        usage
-        exit 0
-        ;;
-      *)
-        error "Unknown option: $1"
-        ;;
-    esac
-    shift
-  done
+Options:
+  --dry-run          Show what is installed and what is missing (install only).
+  --skip-node        Skip Node.js, Yarn, and global npm package installation.
+  -h, --help         Show this help message.
+EOF
 }
 
 detect_os() {
@@ -457,7 +434,7 @@ setup_dotfiles() {
   if [ ! -x "$tpm_bin" ]; then
     info "Installing TPM (Tmux Plugin Manager)..."
     if [ -d "$tpm_dir" ]; then
-      error "TPM directory exists but $tpm_bin is missing. Remove $tpm_dir and rerun ./install.sh."
+      error "TPM directory exists but $tpm_bin is missing. Remove $tpm_dir and rerun ./dot install."
     fi
 
     mkdir -p "$(dirname "$tpm_dir")"
@@ -485,14 +462,29 @@ setup_neovim_plugins() {
   fi
 }
 
-main() {
-  parse_args "$@"
+cmd_install() {
+  local dry_run=false
+
+  while [ "$#" -gt 0 ]; do
+    case "$1" in
+      --dry-run)
+        dry_run=true
+        ;;
+      --skip-node)
+        INSTALL_NODE_DEPS=false
+        ;;
+      *)
+        error "Unknown option: $1"
+        ;;
+    esac
+    shift
+  done
 
   local os
   os="$(detect_os)"
   info "Detected OS: $os"
 
-  if [ "$ACTION" = "check" ]; then
+  if [ "$dry_run" = true ]; then
     run_checks "$os"
     return
   fi
@@ -511,6 +503,39 @@ main() {
   info "Treesitter parsers and other Neovim plugins were bootstrapped during install."
   info "Open a Java file and nvim-java will install its managed Java tooling."
   info "Run 'tmux' and press prefix + I to install tmux plugins."
+}
+
+cmd_apply() {
+  setup_dotfiles
+  setup_neovim_plugins
+
+  echo ""
+  info "Dotfiles linked and plugins bootstrapped."
+}
+
+main() {
+  if [ "$#" -eq 0 ]; then
+    usage
+    exit 1
+  fi
+
+  case "$1" in
+    install)
+      shift
+      cmd_install "$@"
+      ;;
+    apply)
+      shift
+      cmd_apply "$@"
+      ;;
+    -h|--help)
+      usage
+      exit 0
+      ;;
+    *)
+      error "Unknown command: $1. Run './dot --help' for usage."
+      ;;
+  esac
 }
 
 main "$@"
