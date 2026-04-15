@@ -1,6 +1,28 @@
 # .dotfiles
 
-My personal configs.
+Personal development environment configs for **Neovim**, **tmux**, and **Ghostty**, managed with [GNU Stow](https://www.gnu.org/software/stow/) and a single `./dot` install script. Supports macOS (Homebrew) and Ubuntu (apt).
+
+## What's included
+
+| Directory | What it configures |
+|-----------|-------------------|
+| `nvim/`   | Neovim (v0.11.7) with LSP, Treesitter, telescope, nvim-tree, and lazy.nvim plugin management |
+| `tmux/`   | tmux with TPM, Rose Pine Moon theme, vi keybindings, and vim-style pane navigation |
+| `ghostty/`| Ghostty terminal with Rose Pine Moon theme and Google Sans Code font |
+
+### Neovim highlights
+
+- **LSP servers:** Lua, TypeScript, Vue, ESLint, Java (via nvim-java)
+- **Treesitter parsers:** C, Lua, Vim, JavaScript, TypeScript, TSX, Rust, Zig, Java, Vue, CSS, SCSS, JSON, YAML, Prisma
+- **Plugins:** telescope.nvim, nvim-tree, nvim-cmp, lualine, nvim-colorizer, emmet-vim, prettier
+- **Theme:** Rose Pine Moon
+- **Leader key:** `<space>`
+
+### tmux highlights
+
+- Mouse support, vi mode-keys, base index 1
+- Split with `|` / `-`, navigate panes with `h/j/k/l`
+- 200k line scrollback, status bar at top
 
 ## Requirements
 
@@ -10,7 +32,7 @@ My personal configs.
 - [git](https://git-scm.com/)
 - [tmux](https://tmux.github.io/)
 - [ghostty](https://ghostty.org/) (optional, app install is manual; config is stowed via XDG)
-- [neovim](https://neovim.io/)
+- [neovim](https://neovim.io/) (v0.11.7, installed automatically by `./dot install`)
 - [cmake](https://cmake.org/)
 - [delta](https://github.com/dandavison/delta) (used as git pager)
 - [Node.js](https://nodejs.org/) + npm
@@ -22,43 +44,43 @@ My personal configs.
 - [luaformatter](https://github.com/Koihik/LuaFormatter)
 - [luarocks](https://luarocks.org/) (macOS only, used to install LuaFormatter)
 
+All of the above (except Ghostty) are installed automatically by `./dot install`.
+
 ## Install
 
-Clone the repository.
+Clone the repository:
 
 ```sh
 git clone https://github.com/luiseel/.dotfiles ~/.config/.dotfiles
-```
-
-`cd` to cloned repo.
-
-```sh
 cd ~/.config/.dotfiles
 ```
 
-Run the install script (supports macOS and Ubuntu).
+Run the install script:
 
 ```sh
-./install.sh
+./dot install
 ```
 
-To check what is already installed:
+This will detect your OS, install all dependencies, link dotfiles via stow, install TPM, and bootstrap Neovim plugins with lazy.nvim.
+
+### Options
 
 ```sh
-./install.sh check
+./dot install --dry-run     # Show what is installed and what is missing
+./dot install --skip-node   # Skip Node.js, Yarn, and global npm packages
 ```
 
-To skip Node.js, Yarn, and global npm packages:
+### Reapply configs
+
+To relink dotfiles and re-bootstrap Neovim plugins without reinstalling dependencies:
 
 ```sh
-./install.sh --skip-node
+./dot apply
 ```
-
-The installer also bootstraps Neovim plugins with `lazy.nvim`.
 
 ## Docker verification
 
-Build the `verify` target to test the Ubuntu bootstrap path in a container.
+Build the `verify` target to test the Ubuntu bootstrap path in a container:
 
 ```sh
 docker build --target verify -t dotfiles-verify .
@@ -67,18 +89,16 @@ docker build --target verify -t dotfiles-verify .
 That target checks that:
 
 - tmux can start with this config before TPM is installed
-- `./install.sh` provisions TPM in the expected path
+- `./dot install` provisions TPM in the expected path
 - the Neovim LSP config keeps `ts_ls` off `.vue` buffers while `vue_ls` owns them
 
-### Manual setup
+## Manual setup
 
 If you prefer to install dependencies yourself, link the dotfiles with stow:
 
 ```sh
 stow --no-folding -t ~ ghostty nvim tmux
 ```
-
-Ghostty config is stored at `~/.config/ghostty/config.ghostty`.
 
 Then bootstrap Neovim plugins once:
 
