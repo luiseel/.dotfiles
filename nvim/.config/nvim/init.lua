@@ -123,7 +123,6 @@ vim.api.nvim_create_autocmd(
         vim.opt_local.wrap = true
         vim.opt_local.textwidth = 80
         vim.opt_local.formatoptions:append('t') -- Hard wrap
-        vim.opt_local.formatoptions:append('a') -- Auto-format (optional)
       end
     }
 )
