@@ -12,6 +12,7 @@ warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
 INSTALL_NODE_DEPS=true
+TREE_SITTER_CLI_VERSION="0.25.10"
 
 check_missing_count=0
 
@@ -92,6 +93,22 @@ check_npm_package() {
     check_ok "$package"
   else
     check_missing "$package"
+  fi
+}
+
+check_tree_sitter_cli() {
+  if ! command_exists tree-sitter; then
+    check_missing "tree-sitter CLI v$TREE_SITTER_CLI_VERSION"
+    return
+  fi
+
+  local current_version
+  current_version="$(tree-sitter --version | awk '{print $2}')"
+
+  if [ "$current_version" = "$TREE_SITTER_CLI_VERSION" ]; then
+    check_ok "tree-sitter CLI v$TREE_SITTER_CLI_VERSION"
+  else
+    check_missing "tree-sitter CLI v$TREE_SITTER_CLI_VERSION (found v$current_version)"
   fi
 }
 
@@ -185,6 +202,7 @@ run_checks() {
   check_command "tmux" tmux
   check_command "neovim (nvim)" nvim
   check_command "cmake" cmake
+  check_tree_sitter_cli
   check_command "lua-language-server" lua-language-server
   check_command "luaformatter (lua-format)" lua-format
 
@@ -412,6 +430,33 @@ install_npm_packages() {
       npm install -g "$pkg"
     fi
   done
+
+  install_tree_sitter_cli
+}
+
+install_tree_sitter_cli() {
+  if ! command_exists npm; then
+    warn "npm is not installed. Skipping tree-sitter CLI installation."
+    return
+  fi
+
+  local current_version=""
+  if command_exists tree-sitter; then
+    current_version="$(tree-sitter --version | awk '{print $2}')"
+  fi
+
+  if [ "$current_version" = "$TREE_SITTER_CLI_VERSION" ]; then
+    info "tree-sitter CLI v$TREE_SITTER_CLI_VERSION is already installed"
+    return
+  fi
+
+  if command_exists brew && brew list tree-sitter-cli &>/dev/null; then
+    info "Unlinking Homebrew tree-sitter-cli; nvim-treesitter requires v$TREE_SITTER_CLI_VERSION"
+    brew unlink tree-sitter-cli
+  fi
+
+  info "Installing tree-sitter CLI v$TREE_SITTER_CLI_VERSION..."
+  npm install -g --force "tree-sitter-cli@$TREE_SITTER_CLI_VERSION"
 }
 
 setup_dotfiles() {
