@@ -13,8 +13,8 @@ Personal development environment configs for **Neovim**, **tmux**, and **Ghostty
 ### Neovim highlights
 
 - **LSP servers:** Lua, TypeScript, Vue, ESLint, Java (via nvim-java)
-- **Treesitter parsers:** C, Lua, Vim, JavaScript, TypeScript, TSX, Rust, Zig, Java, Vue, CSS, SCSS, JSON, YAML, Prisma
-- **Plugins:** telescope.nvim, nvim-tree, nvim-cmp, lualine, nvim-colorizer, emmet-vim, prettier
+- **Treesitter parsers:** C, Lua, Vim, VimDoc, Query, JavaScript, TypeScript, TSX, Rust, Zig, Java, Vue, CSS, SCSS, JSON, YAML, Prisma
+- **Plugins:** telescope.nvim, fff.nvim, nvim-tree, nvim-cmp, lualine, nvim-colorizer, emmet-vim, prettier, vim-lua-format, nvim-java
 - **Theme:** Rose Pine Moon
 - **Leader key:** `<space>`
 
@@ -34,9 +34,9 @@ Personal development environment configs for **Neovim**, **tmux**, and **Ghostty
 - [ghostty](https://ghostty.org/) (optional, app install is manual; config is stowed via XDG)
 - [neovim](https://neovim.io/) (v0.11.7, installed automatically by `./dot install`)
 - [cmake](https://cmake.org/)
-- [delta](https://github.com/dandavison/delta) (used as git pager)
 - [Node.js](https://nodejs.org/) + npm
 - [yarn](https://yarnpkg.com/)
+- [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter/tree/master/cli) v0.25.10 (pinned, installed via npm)
 - [lua-language-server](https://github.com/LuaLS/lua-language-server)
 - [typescript-language-server](https://github.com/typescript-language-server/typescript-language-server)
 - [vue-language-server](https://github.com/vuejs/language-tools)
