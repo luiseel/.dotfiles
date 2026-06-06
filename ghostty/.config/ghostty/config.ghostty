@@ -7,9 +7,8 @@ font-style-bold-italic = false
 font-synthetic-style = no-italic
 
 adjust-cell-height = 5
-
-macos-icon = holographic
-
 adjust-cell-width = -5%
+
+#macos-icon = holographic
 #font-thicken = true
 #font-thicken-strength = 128
