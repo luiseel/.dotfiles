@@ -2,13 +2,5 @@ theme = Rose Pine Moon
 
 font-family = Google Sans Code
 font-size = 14
-font-style-italic = false
-font-style-bold-italic = false
-font-synthetic-style = no-italic
-
 adjust-cell-height = 5
 adjust-cell-width = -5%
-
-#macos-icon = holographic
-#font-thicken = true
-#font-thicken-strength = 128
