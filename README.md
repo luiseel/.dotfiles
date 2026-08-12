@@ -1,6 +1,6 @@
 # .dotfiles
 
-Personal development environment configs for **Neovim**, **tmux**, and **Ghostty**, managed with [GNU Stow](https://www.gnu.org/software/stow/) and a single `./dot` install script. Supports macOS (Homebrew) and Ubuntu (apt).
+Personal development environment configs for **Neovim**, **tmux**, **herdr**, and **Ghostty**, managed with [GNU Stow](https://www.gnu.org/software/stow/) and a single `./dot` install script. Supports macOS (Homebrew) and Ubuntu (apt).
 
 ## What's included
 
@@ -8,6 +8,7 @@ Personal development environment configs for **Neovim**, **tmux**, and **Ghostty
 |-----------|-------------------|
 | `nvim/`   | Neovim (v0.11.7) with LSP, Treesitter, telescope, nvim-tree, and lazy.nvim plugin management |
 | `tmux/`   | tmux with TPM, Rose Pine Moon theme, vi keybindings, and vim-style pane navigation |
+| `herdr/`  | herdr agent multiplexer with Rose Pine theme and tmux-style keybindings |
 | `ghostty/`| Ghostty terminal with Rose Pine Moon theme and Google Sans Code font |
 
 ### Neovim highlights
@@ -24,6 +25,12 @@ Personal development environment configs for **Neovim**, **tmux**, and **Ghostty
 - Split with `|` / `-`, navigate panes with `h/j/k/l`
 - 200k line scrollback, status bar at top
 
+### herdr highlights
+
+- Same prefix as tmux (`ctrl+b`) and the same pane keys: `|` / `-` to split, `h/j/k/l` to move
+- `prefix+r` reloads the config; resize mode moves to `prefix+shift+r`
+- Rose Pine theme, 20 MB pane scrollback
+
 ## Requirements
 
 - [stow](https://www.gnu.org/software/stow/)
@@ -31,6 +38,7 @@ Personal development environment configs for **Neovim**, **tmux**, and **Ghostty
 - [fd](https://github.com/sharkdp/fd)
 - [git](https://git-scm.com/)
 - [tmux](https://tmux.github.io/)
+- [herdr](https://herdr.dev/) (macOS only in `./dot install`; on Ubuntu install it manually)
 - [ghostty](https://ghostty.org/) (optional, app install is manual; config is stowed via XDG)
 - [neovim](https://neovim.io/) (v0.11.7, installed automatically by `./dot install`)
 - [cmake](https://cmake.org/)
@@ -97,7 +105,7 @@ That target checks that:
 If you prefer to install dependencies yourself, link the dotfiles with stow:
 
 ```sh
-stow --no-folding -t ~ ghostty nvim tmux
+stow --no-folding -t ~ ghostty herdr nvim tmux
 ```
 
 Then bootstrap Neovim plugins once:

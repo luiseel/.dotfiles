@@ -190,6 +190,14 @@ check_ghostty_app() {
   check_note "Ghostty app not found (optional, installed manually)"
 }
 
+check_herdr() {
+  if command_exists herdr; then
+    check_ok "herdr"
+  else
+    check_note "herdr not found (optional, brew install herdr on macOS)"
+  fi
+}
+
 run_checks() {
   local os="$1"
   check_missing_count=0
@@ -223,6 +231,7 @@ run_checks() {
   echo ""
   info "Checking optional/manual dependencies..."
   check_ghostty_app "$os"
+  check_herdr
 
   echo ""
   info "Checking local setup..."
@@ -231,6 +240,7 @@ run_checks() {
   check_no_broken_symlinks "Neovim config directory" "$HOME/.config/nvim"
   check_linked_path "tmux config" "$HOME/.tmux.conf"
   check_executable "TPM" "$HOME/.tmux/plugins/tpm/tpm"
+  check_linked_path "herdr config" "$HOME/.config/herdr/config.toml"
 
   echo ""
   if [ "$check_missing_count" -eq 0 ]; then
@@ -312,6 +322,7 @@ install_macos() {
     fd
     git
     tmux
+    herdr
     cmake
     lua-language-server
     luarocks
@@ -467,6 +478,7 @@ setup_dotfiles() {
   cd "$dotfiles_dir"
   local packages=(
     ghostty
+    herdr
     nvim
     tmux
   )

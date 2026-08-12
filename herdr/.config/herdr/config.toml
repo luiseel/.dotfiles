@@ -1,0 +1,59 @@
+onboarding = false
+
+[theme]
+name = "rose-pine"
+
+[advanced]
+# tmux: set -g history-limit 200000 (herdr counts bytes, not lines)
+scrollback_limit_bytes = 20000000
+
+[keys]
+# tmux: default prefix (tmux-sensible does not change it)
+prefix = "ctrl+b"
+
+# tmux: bind | split-window -h   → side by side
+#       bind - split-window -v   → stacked
+split_vertical = ["prefix+|", "prefix+v"]
+split_horizontal = "prefix+minus"
+
+# tmux: bind h/j/k/l select-pane (same as the herdr defaults)
+focus_pane_left = "prefix+h"
+focus_pane_down = "prefix+j"
+focus_pane_up = "prefix+k"
+focus_pane_right = "prefix+l"
+
+# tmux: bind r source-file ~/.tmux.conf
+# herdr has prefix+r on resize mode by default, so the two swap places.
+reload_config = "prefix+r"
+resize_mode = "prefix+shift+r"
+
+# Optional: tmux-style directional resize on prefix+H/J/K/L.
+# These keys are swap_pane_* in herdr, so move the swaps first if you enable them.
+# swap_pane_left = "prefix+alt+h"
+# swap_pane_down = "prefix+alt+j"
+# swap_pane_up = "prefix+alt+k"
+# swap_pane_right = "prefix+alt+l"
+#
+# [[keys.command]]
+# key = "prefix+shift+h"
+# type = "shell"
+# command = "herdr pane resize --direction left --amount 0.02"
+# description = "resize pane left"
+#
+# [[keys.command]]
+# key = "prefix+shift+j"
+# type = "shell"
+# command = "herdr pane resize --direction down --amount 0.02"
+# description = "resize pane down"
+#
+# [[keys.command]]
+# key = "prefix+shift+k"
+# type = "shell"
+# command = "herdr pane resize --direction up --amount 0.02"
+# description = "resize pane up"
+#
+# [[keys.command]]
+# key = "prefix+shift+l"
+# type = "shell"
+# command = "herdr pane resize --direction right --amount 0.02"
+# description = "resize pane right"
