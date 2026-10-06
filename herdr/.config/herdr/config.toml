@@ -3,6 +3,7 @@ onboarding = false
 [theme]
 name = "rose-pine"
 
+auto_switch = false
 [advanced]
 # tmux: set -g history-limit 200000 (herdr counts bytes, not lines)
 scrollback_limit_bytes = 20000000
