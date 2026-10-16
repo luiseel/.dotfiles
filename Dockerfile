@@ -1,7 +1,5 @@
 FROM ubuntu:24.04 AS base
 
-ARG TARGETARCH
-
 # Avoid prompts during package installation
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -33,17 +31,6 @@ RUN npm install -g \
     @vue/language-server \
     vscode-langservers-extracted
 
-# Install Neovim stable (v0.11.7)
-RUN case "$TARGETARCH" in \
-      amd64) nvim_arch="x86_64" ;; \
-      arm64) nvim_arch="arm64" ;; \
-      *) echo "Unsupported TARGETARCH: $TARGETARCH" >&2; exit 1 ;; \
-    esac \
-    && curl -LO "https://github.com/neovim/neovim/releases/download/v0.11.7/nvim-linux-${nvim_arch}.tar.gz" \
-    && tar -C /opt -xzf "nvim-linux-${nvim_arch}.tar.gz" \
-    && rm "nvim-linux-${nvim_arch}.tar.gz" \
-    && ln -s "/opt/nvim-linux-${nvim_arch}/bin/nvim" /usr/local/bin/nvim
-
 # Create a non-root user (optional)
 RUN useradd -m -s /bin/bash developer \
     && mkdir -p /etc/sudoers.d \
@@ -61,7 +48,7 @@ RUN mkdir -p ~/.config
 COPY --chown=developer:developer . /home/developer/.dotfiles
 
 # Link dotfiles and bootstrap plugins
-RUN cd ~/.dotfiles && ./dot apply
+RUN cd ~/.dotfiles && ./dot nvim-install && ./dot apply
 
 FROM base AS verify
 
@@ -69,10 +56,7 @@ COPY --chown=developer:developer . /home/developer/.dotfiles
 RUN cd ~/.dotfiles && ./dot install --dry-run
 RUN cd ~/.dotfiles && ./dot apply
 RUN test -x /home/developer/.tmux/plugins/tpm/tpm
-RUN XDG_STATE_HOME=/tmp/nvim-state XDG_CACHE_HOME=/tmp/nvim-cache \
-    nvim --headless -i NONE \
-    '+lua dofile("/home/developer/.config/nvim/init.lua"); assert(not vim.tbl_contains(vim.lsp.config.ts_ls.filetypes, "vue"), "ts_ls should not attach to vue"); assert(vim.tbl_contains(vim.lsp.config.vue_ls.filetypes, "vue"), "vue_ls must attach to vue")' \
-    +qa
+RUN nvim --headless -i NONE -S /home/developer/.dotfiles/scripts/verify-nvim.lua
 
 FROM base AS dev
 

@@ -12,7 +12,11 @@ warn() { echo -e "${YELLOW}[WARN]${NC} $1"; }
 error() { echo -e "${RED}[ERROR]${NC} $1"; exit 1; }
 
 INSTALL_NODE_DEPS=true
-TREE_SITTER_CLI_VERSION="0.25.10"
+NEOVIM_VERSION="0.12.5"
+TREE_SITTER_CLI_VERSION="0.26.7"
+TOOLS_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/dotfiles/tools"
+NEOVIM_DIR="$TOOLS_DIR/neovim-$NEOVIM_VERSION"
+TREE_SITTER_DIR="$TOOLS_DIR/tree-sitter-$TREE_SITTER_CLI_VERSION"
 
 check_missing_count=0
 
@@ -23,6 +27,8 @@ Usage: ./dot <command> [options]
 Commands:
   install            Install all dependencies, link dotfiles, and bootstrap plugins.
   apply              Link dotfiles with stow and bootstrap Neovim plugins.
+  nvim-install       Install the pinned editor and CLI; switch the nvim launcher.
+  nvim-bootstrap     Restore locked plugins and install parsers for the active config.
 
 Options:
   --dry-run          Show what is installed and what is missing (install only).
@@ -97,18 +103,11 @@ check_npm_package() {
 }
 
 check_tree_sitter_cli() {
-  if ! command_exists tree-sitter; then
-    check_missing "tree-sitter CLI v$TREE_SITTER_CLI_VERSION"
-    return
-  fi
-
-  local current_version
-  current_version="$(tree-sitter --version | awk '{print $2}')"
-
-  if [ "$current_version" = "$TREE_SITTER_CLI_VERSION" ]; then
-    check_ok "tree-sitter CLI v$TREE_SITTER_CLI_VERSION"
+  local cli="$TREE_SITTER_DIR/bin/tree-sitter"
+  if [ -x "$cli" ] && [ "$("$cli" --version | awk '{print $2}')" = "$TREE_SITTER_CLI_VERSION" ]; then
+    check_ok "managed tree-sitter CLI v$TREE_SITTER_CLI_VERSION"
   else
-    check_missing "tree-sitter CLI v$TREE_SITTER_CLI_VERSION (found v$current_version)"
+    check_missing "managed tree-sitter CLI v$TREE_SITTER_CLI_VERSION"
   fi
 }
 
@@ -250,61 +249,50 @@ run_checks() {
   fi
 }
 
-NEOVIM_VERSION="0.11.7"
+prepare_neovim() {
+  local platform arch filename tmpdir
+  case "$(uname -s)" in
+    Darwin) platform=macos ;;
+    Linux) platform=linux ;;
+    *) error "Unsupported operating system" ;;
+  esac
+  case "$(uname -m)" in
+    arm64|aarch64) arch=arm64 ;;
+    x86_64) arch=x86_64 ;;
+    *) error "Unsupported architecture" ;;
+  esac
+  filename="nvim-${platform}-${arch}.tar.gz"
+  if [ ! -x "$NEOVIM_DIR/bin/nvim" ]; then
+    tmpdir=$(mktemp -d)
+    info "Downloading Neovim v$NEOVIM_VERSION..."
+    curl -fsSL "https://github.com/neovim/neovim/releases/download/v${NEOVIM_VERSION}/${filename}" -o "$tmpdir/$filename"
+    tar -xzf "$tmpdir/$filename" -C "$tmpdir"
+    "$tmpdir/${filename%.tar.gz}/bin/nvim" --version >/dev/null
+    mkdir -p "$TOOLS_DIR"
+    mv "$tmpdir/${filename%.tar.gz}" "$NEOVIM_DIR"
+    rm -rf "$tmpdir"
+  fi
+
+  install_tree_sitter_cli
+  # Keep the matching runtime and CLI together without changing the global CLI.
+  {
+    printf '#!/usr/bin/env bash\n'
+    printf 'export PATH=%q:"$PATH"\n' "$TREE_SITTER_DIR/bin"
+    printf 'exec %q "$@"\n' "$NEOVIM_DIR/bin/nvim"
+  } > "$NEOVIM_DIR/launch"
+  chmod +x "$NEOVIM_DIR/launch"
+}
 
 install_neovim() {
-  local current_version
-  if command_exists nvim; then
-    current_version=$(nvim --version | head -1 | sed 's/NVIM v//')
-    if [ "$current_version" = "$NEOVIM_VERSION" ]; then
-      info "Neovim v$NEOVIM_VERSION is already installed"
-      return
-    fi
-    info "Neovim v$current_version found, upgrading to v$NEOVIM_VERSION..."
-  else
-    info "Installing Neovim v$NEOVIM_VERSION..."
+  prepare_neovim
+  if [ -e /usr/local/bin/nvim ] && [ ! -L /usr/local/bin/nvim ]; then
+    sudo mv /usr/local/bin/nvim "/usr/local/bin/nvim.backup-$(date +%Y%m%d%H%M%S)"
   fi
-
-  local os
-  os=$(uname -s)
-  local arch
-  arch=$(uname -m)
-  local url filename
-
-  if [ "$os" = "Darwin" ]; then
-    if [ "$arch" = "arm64" ]; then
-      filename="nvim-macos-arm64.tar.gz"
-    else
-      filename="nvim-macos-x86_64.tar.gz"
-    fi
-  elif [ "$os" = "Linux" ]; then
-    if [ "$arch" = "aarch64" ]; then
-      filename="nvim-linux-arm64.tar.gz"
-    else
-      filename="nvim-linux-x86_64.tar.gz"
-    fi
-  else
-    error "Unsupported OS: $os"
+  sudo mkdir -p /usr/local/bin
+  sudo ln -sfn "$NEOVIM_DIR/launch" /usr/local/bin/nvim
+  if [ "$(nvim --version | head -1)" != "NVIM v$NEOVIM_VERSION" ]; then
+    error "Another nvim shadows /usr/local/bin/nvim. Fix PATH before applying the config."
   fi
-
-  url="https://github.com/neovim/neovim/releases/download/v${NEOVIM_VERSION}/${filename}"
-
-  local tmpdir
-  tmpdir=$(mktemp -d)
-  info "Downloading Neovim v$NEOVIM_VERSION..."
-  curl -fsSL "$url" -o "$tmpdir/$filename"
-  tar -xzf "$tmpdir/$filename" -C "$tmpdir"
-
-  local extracted_dir
-  extracted_dir=$(find "$tmpdir" -maxdepth 1 -type d -name 'nvim-*' | head -1)
-
-  info "Installing Neovim to /usr/local..."
-  sudo cp -r "$extracted_dir"/bin/* /usr/local/bin/
-  sudo cp -r "$extracted_dir"/lib/* /usr/local/lib/
-  sudo cp -r "$extracted_dir"/share/* /usr/local/share/
-
-  rm -rf "$tmpdir"
-  info "Neovim v$NEOVIM_VERSION installed successfully"
 }
 
 install_macos() {
@@ -441,33 +429,32 @@ install_npm_packages() {
       npm install -g "$pkg"
     fi
   done
-
-  install_tree_sitter_cli
 }
 
 install_tree_sitter_cli() {
-  if ! command_exists npm; then
-    warn "npm is not installed. Skipping tree-sitter CLI installation."
+  if [ -x "$TREE_SITTER_DIR/bin/tree-sitter" ]; then
     return
   fi
-
-  local current_version=""
-  if command_exists tree-sitter; then
-    current_version="$(tree-sitter --version | awk '{print $2}')"
-  fi
-
-  if [ "$current_version" = "$TREE_SITTER_CLI_VERSION" ]; then
-    info "tree-sitter CLI v$TREE_SITTER_CLI_VERSION is already installed"
-    return
-  fi
-
-  if command_exists brew && brew list tree-sitter-cli &>/dev/null; then
-    info "Unlinking Homebrew tree-sitter-cli; nvim-treesitter requires v$TREE_SITTER_CLI_VERSION"
-    brew unlink tree-sitter-cli
-  fi
-
-  info "Installing tree-sitter CLI v$TREE_SITTER_CLI_VERSION..."
-  npm install -g --force "tree-sitter-cli@$TREE_SITTER_CLI_VERSION"
+  local platform arch tmpdir
+  case "$(uname -s)" in
+    Darwin) platform=macos ;;
+    Linux) platform=linux ;;
+    *) error "Unsupported operating system" ;;
+  esac
+  case "$(uname -m)" in
+    arm64|aarch64) arch=arm64 ;;
+    x86_64) arch=x64 ;;
+    *) error "Unsupported architecture" ;;
+  esac
+  tmpdir=$(mktemp -d)
+  info "Downloading tree-sitter CLI v$TREE_SITTER_CLI_VERSION..."
+  curl -fsSL "https://github.com/tree-sitter/tree-sitter/releases/download/v${TREE_SITTER_CLI_VERSION}/tree-sitter-${platform}-${arch}.gz" -o "$tmpdir/tree-sitter.gz"
+  gunzip "$tmpdir/tree-sitter.gz"
+  chmod +x "$tmpdir/tree-sitter"
+  [ "$("$tmpdir/tree-sitter" --version | awk '{print $2}')" = "$TREE_SITTER_CLI_VERSION" ] || error "Unexpected tree-sitter version"
+  mkdir -p "$TREE_SITTER_DIR/bin"
+  mv "$tmpdir/tree-sitter" "$TREE_SITTER_DIR/bin/"
+  rm -rf "$tmpdir"
 }
 
 setup_dotfiles() {
@@ -508,15 +495,13 @@ setup_dotfiles() {
 }
 
 setup_neovim_plugins() {
-  if ! command_exists nvim; then
-    warn "Neovim is not installed. Skipping plugin bootstrap."
-    return
+  local editor="${1:-nvim}"
+  command_exists "$editor" || error "Neovim is not installed. Run ./dot nvim-install first."
+  if [ "$("$editor" --version | head -1)" != "NVIM v$NEOVIM_VERSION" ]; then
+    error "Bootstrap requires Neovim v$NEOVIM_VERSION. Run ./dot nvim-install first."
   fi
-
-  info "Bootstrapping Neovim plugins with lazy.nvim..."
-  if ! nvim --headless "+Lazy! sync" +qa; then
-    warn "Neovim plugin bootstrap failed. Open Neovim and run ':Lazy sync' to inspect the error."
-  fi
+  info "Restoring locked Neovim plugins and installing parsers..."
+  "$editor" --headless -i NONE '+lua local ok, err = pcall(function() require("config.bootstrap").run() end); if not ok then vim.api.nvim_err_writeln(err); vim.cmd("cquit 1") end'
 }
 
 cmd_install() {
@@ -580,6 +565,12 @@ main() {
     install)
       shift
       cmd_install "$@"
+      ;;
+    nvim-install)
+      install_neovim
+      ;;
+    nvim-bootstrap)
+      setup_neovim_plugins
       ;;
     apply)
       shift

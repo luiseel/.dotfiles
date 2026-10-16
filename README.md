@@ -6,7 +6,7 @@ Personal development environment configs for **Neovim**, **tmux**, **herdr**, an
 
 | Directory | What it configures |
 |-----------|-------------------|
-| `nvim/`   | Neovim (v0.11.7) with LSP, Treesitter, telescope, nvim-tree, and lazy.nvim plugin management |
+| `nvim/`   | Neovim (v0.12.5) with LSP, Treesitter, telescope, nvim-tree, and lazy.nvim plugin management |
 | `tmux/`   | tmux with TPM, Rose Pine Moon theme, vi keybindings, and vim-style pane navigation |
 | `herdr/`  | herdr agent multiplexer with Rose Pine theme and tmux-style keybindings |
 | `ghostty/`| Ghostty terminal with Rose Pine Moon theme and Google Sans Code font |
@@ -14,7 +14,7 @@ Personal development environment configs for **Neovim**, **tmux**, **herdr**, an
 ### Neovim highlights
 
 - **LSP servers:** Lua, TypeScript, Vue, ESLint, Java (via nvim-java)
-- **Treesitter parsers:** C, Lua, Vim, VimDoc, Query, JavaScript, TypeScript, TSX, Rust, Zig, Java, Vue, CSS, SCSS, JSON, YAML, Prisma
+- **Treesitter parsers:** C, Lua, Vim, VimDoc, Query, JavaScript, TypeScript, TSX, Rust, Zig, Java, Kotlin, Vue, CSS, SCSS, JSON, YAML, Prisma
 - **Plugins:** telescope.nvim, fff.nvim, nvim-tree, nvim-cmp, lualine, nvim-colorizer, emmet-vim, prettier, vim-lua-format, nvim-java
 - **Theme:** Rose Pine Moon
 - **Leader key:** `<space>`
@@ -40,11 +40,11 @@ Personal development environment configs for **Neovim**, **tmux**, **herdr**, an
 - [tmux](https://tmux.github.io/)
 - [herdr](https://herdr.dev/) (macOS only in `./dot install`; on Ubuntu install it manually)
 - [ghostty](https://ghostty.org/) (optional, app install is manual; config is stowed via XDG)
-- [neovim](https://neovim.io/) (v0.11.7, installed automatically by `./dot install`)
+- [neovim](https://neovim.io/) (v0.12.5, installed automatically by `./dot install`)
 - [cmake](https://cmake.org/)
 - [Node.js](https://nodejs.org/) + npm
 - [yarn](https://yarnpkg.com/)
-- [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter/tree/master/cli) v0.25.10 (pinned, installed via npm)
+- [tree-sitter-cli](https://github.com/tree-sitter/tree-sitter/tree/master/cli) v0.26.7 (pinned native release, installed privately alongside Neovim)
 - [lua-language-server](https://github.com/LuaLS/lua-language-server)
 - [typescript-language-server](https://github.com/typescript-language-server/typescript-language-server)
 - [vue-language-server](https://github.com/vuejs/language-tools)
@@ -96,9 +96,10 @@ docker build --target verify -t dotfiles-verify .
 
 That target checks that:
 
-- tmux can start with this config before TPM is installed
-- `./dot install` provisions TPM in the expected path
-- the Neovim LSP config keeps `ts_ls` off `.vue` buffers while `vue_ls` owns them
+- the same `./dot nvim-install` and `./dot apply` path provisions Neovim, plugins, parsers, and TPM
+- Vue hybrid mode retains both `ts_ls` and `vue_ls`, with request forwarding
+- Lua, TypeScript, and Vue samples parse and have Treesitter highlighting enabled
+- Kotlin asynchronous parsing and highlighting work with the installed runtime
 
 ## Manual setup
 
@@ -111,7 +112,41 @@ stow --no-folding -t ~ ghostty herdr nvim tmux
 Then bootstrap Neovim plugins once:
 
 ```sh
-nvim --headless "+Lazy! sync" +qa
+./dot nvim-bootstrap
 ```
 
-If `nvim-treesitter.configs` is missing on a fresh machine, the local plugin checkout is incomplete. Run `:Lazy sync` inside Neovim or rerun the headless command above.
+The config uses nvim-treesitter's `main` API and requires Neovim 0.12 or newer.
+Bootstrap restores `lazy-lock.json` and waits for parser installation; errors fail
+the command. Use `:Lazy update` only for intentional plugin updates, then review
+and commit the lockfile. Additional supported filetypes install their parsers automatically;
+you can also use `:TSInstall <language>`.
+
+## Neovim setup and verification
+
+Neovim uses the normal `~/.config/nvim` configuration and data directories.
+The installer keeps complete, versioned Neovim and tree-sitter distributions
+under `${XDG_DATA_HOME:-~/.local/share}/dotfiles/tools`. Its launcher prepends the
+matching private tree-sitter CLI to Neovim's PATH.
+
+To install the pinned editor and bootstrap its plugins:
+
+```sh
+./dot nvim-install
+./dot apply
+```
+
+Before replacing an existing configuration, back up and move aside conflicting
+physical files in `~/.config/nvim` so Stow can link the repository configuration.
+When migrating from nvim-treesitter's old `master` branch, preserve the old plugin
+and parser directories and bootstrap the new ones together. Keep the old complete
+Neovim distribution for rollback; replacing only its executable mixes binary and
+runtime versions.
+
+Java tooling is installed on first opening a Java file. Kotlin tooling is likewise
+initialized on first opening Kotlin.
+
+Run the automated smoke check with:
+
+```sh
+nvim --headless -i NONE -S scripts/verify-nvim.lua
+```

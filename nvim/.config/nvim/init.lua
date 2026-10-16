@@ -7,9 +7,6 @@ vim.opt.signcolumn = 'yes'
 -- Add cmp_nvim_lsp capabilities settings to lspconfig
 -- This should be executed before you configure any language server
 local default_capabilities = require('cmp_nvim_lsp').default_capabilities()
-local java_ok, java = pcall(require, 'java')
-
-if java_ok then java.setup({spring_boot_tools = {enable = false}}) end
 
 -- This is where you enable features that only work
 -- if there is a language server active in the file
@@ -72,6 +69,8 @@ vim.lsp.config(
 
 local npm_global_root = vim.fn.system('npm root -g'):gsub('\n', '')
 
+-- Vue 3 hybrid mode needs ts_ls for script sections and vue_ls for HTML/CSS.
+-- nvim-lspconfig supplies vue_ls's tsserver/request forwarding handler.
 local vue_plugin = {
   name = '@vue/typescript-plugin',
   location = npm_global_root .. '/@vue/language-server',
@@ -84,10 +83,7 @@ vim.lsp.config(
       cmd = {'typescript-language-server', '--stdio'},
       root_markers = {'tsconfig.json', 'jsconfig.json', 'package.json', '.git'},
       capabilities = default_capabilities,
-      filetypes = {
-        'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact',
-        'typescript.tsx', 'vue'
-      },
+      filetypes = {'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'vue'},
       init_options = {plugins = {vue_plugin}}
     }
 )
@@ -114,7 +110,7 @@ vim.lsp.config(
 
 vim.lsp.config('jdtls', {capabilities = default_capabilities})
 
-vim.lsp.enable({'lua_ls', 'ts_ls', 'vue_ls', 'eslint', 'jdtls'})
+vim.lsp.enable({'lua_ls', 'ts_ls', 'vue_ls', 'eslint'})
 
 vim.api.nvim_create_autocmd(
     "FileType", {
