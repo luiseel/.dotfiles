@@ -13,16 +13,19 @@ Personal development environment configs for **Neovim**, **tmux**, **herdr**, an
 
 ### Neovim highlights
 
-- **LSP servers:** Lua, TypeScript, Vue, ESLint, Java (via nvim-java)
+- **LSP servers:** Lua, TypeScript, Vue (hybrid mode), ESLint, Java (via nvim-java), Kotlin (via kotlin.nvim + Mason)
 - **Treesitter parsers:** C, Lua, Vim, VimDoc, Query, JavaScript, TypeScript, TSX, Rust, Zig, Java, Kotlin, Vue, CSS, SCSS, JSON, YAML, Prisma
-- **Plugins:** telescope.nvim, fff.nvim, nvim-tree, nvim-cmp, lualine, nvim-colorizer, emmet-vim, prettier, vim-lua-format, nvim-java
+- **Plugins:** telescope.nvim, fff.nvim, nvim-tree, nvim-cmp, lualine, nvim-colorizer (catgoose fork), emmet-vim, vim-prettier, vim-lua-format, nvim-java, kotlin.nvim, vim-jsx-improve, vim-pico8-syntax
+- **Plugin versions:** pinned in `lazy-lock.json`
 - **Theme:** Rose Pine Moon
 - **Leader key:** `<space>`
 
 ### tmux highlights
 
 - Mouse support, vi mode-keys, base index 1
-- Split with `|` / `-`, navigate panes with `h/j/k/l`
+- Split with `|` / `-`, navigate panes with `h/j/k/l`, resize with `H/J/K/L`
+- Even layouts with `=` (horizontal) / `+` (vertical), reload config with `r`
+- Plugins: tmux-sensible, tmux-menus
 - 200k line scrollback, status bar at top
 
 ### herdr highlights
@@ -51,8 +54,9 @@ Personal development environment configs for **Neovim**, **tmux**, **herdr**, an
 - [vscode-langservers-extracted](https://github.com/hrsh7th/vscode-langservers-extracted) (eslint)
 - [luaformatter](https://github.com/Koihik/LuaFormatter)
 - [luarocks](https://luarocks.org/) (macOS only, used to install LuaFormatter)
+- A JDK with `$JAVA_HOME` set (Kotlin symbol resolution; not installed by `./dot install`)
 
-All of the above (except Ghostty) are installed automatically by `./dot install`.
+All of the above (except Ghostty, the JDK, and herdr on Ubuntu) are installed automatically by `./dot install`.
 
 ## Install
 
@@ -71,11 +75,15 @@ Run the install script:
 
 This will detect your OS, install all dependencies, link dotfiles via stow, install TPM, and bootstrap Neovim plugins with lazy.nvim.
 
-### Options
+### Commands
 
 ```sh
+./dot install               # Install dependencies, link dotfiles, bootstrap plugins
 ./dot install --dry-run     # Show what is installed and what is missing
 ./dot install --skip-node   # Skip Node.js, Yarn, and global npm packages
+./dot apply                 # Relink dotfiles and bootstrap Neovim plugins
+./dot nvim-install          # Install the pinned Neovim and tree-sitter CLI
+./dot nvim-bootstrap        # Restore locked plugins and install parsers
 ```
 
 ### Reapply configs
@@ -142,8 +150,8 @@ and parser directories and bootstrap the new ones together. Keep the old complet
 Neovim distribution for rollback; replacing only its executable mixes binary and
 runtime versions.
 
-Java tooling is installed on first opening a Java file. Kotlin tooling is likewise
-initialized on first opening Kotlin.
+Java tooling is installed on first opening a Java file. On first opening a Kotlin
+file, Mason installs `kotlin_lsp`.
 
 Run the automated smoke check with:
 
