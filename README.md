@@ -111,6 +111,19 @@ That target checks that:
 - Lua, TypeScript, and Vue samples parse and have Treesitter highlighting enabled
 - Kotlin asynchronous parsing and highlighting work with the installed runtime
 
+## Claude Code status line
+
+Stow links `~/.claude/statusline.sh`, but Claude Code runs it only when `~/.claude/settings.json` has a `statusLine` entry. Add this once on each machine:
+
+```json
+{
+  "statusLine": {
+    "type": "command",
+    "command": "~/.claude/statusline.sh"
+  }
+}
+```
+
 ## Manual setup
 
 If you prefer to install dependencies yourself, link the dotfiles with stow:
