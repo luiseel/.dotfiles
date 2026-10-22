@@ -18,6 +18,9 @@ scrollback_limit_bytes = 20000000
 # tmux: default prefix (tmux-sensible does not change it)
 prefix = "ctrl+b"
 
+previous_workspace = "prefix+u"
+next_workspace = "prefix+d"
+
 # tmux: bind | split-window -h   → side by side
 #       bind - split-window -v   → stacked
 split_vertical = ["prefix+|", "prefix+v"]
