@@ -206,6 +206,7 @@ run_checks() {
   check_command "ripgrep (rg)" rg
   check_any_command "fd" fd fdfind
   check_command "git" git
+  check_command "jq" jq
   check_command "tmux" tmux
   check_command "neovim (nvim)" nvim
   check_command "cmake" cmake
@@ -240,6 +241,7 @@ run_checks() {
   check_linked_path "tmux config" "$HOME/.tmux.conf"
   check_executable "TPM" "$HOME/.tmux/plugins/tpm/tpm"
   check_linked_path "herdr config" "$HOME/.config/herdr/config.toml"
+  check_linked_path "Claude Code status line" "$HOME/.claude/statusline.sh"
 
   echo ""
   if [ "$check_missing_count" -eq 0 ]; then
@@ -309,6 +311,7 @@ install_macos() {
     ripgrep
     fd
     git
+    jq
     tmux
     herdr
     cmake
@@ -355,6 +358,7 @@ install_ubuntu() {
     ripgrep
     fd-find
     git
+    jq
     tmux
     cmake
     curl
@@ -464,6 +468,7 @@ setup_dotfiles() {
   info "Linking dotfiles with stow..."
   cd "$dotfiles_dir"
   local packages=(
+    claude
     ghostty
     herdr
     nvim

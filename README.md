@@ -9,6 +9,7 @@ Personal development environment configs for **Neovim**, **tmux**, **herdr**, an
 | `nvim/`   | Neovim (v0.12.5) with LSP, Treesitter, telescope, nvim-tree, and lazy.nvim plugin management |
 | `tmux/`   | tmux with TPM, Rose Pine Moon theme, vi keybindings, and vim-style pane navigation |
 | `herdr/`  | herdr agent multiplexer with Rose Pine theme and tmux-style keybindings |
+| `claude/` | Claude Code status line script (model, repo, worktree, context, cost, rate limits) |
 | `ghostty/`| Ghostty terminal with Rose Pine Moon theme and Google Sans Code font |
 
 ### Neovim highlights
@@ -38,6 +39,7 @@ Personal development environment configs for **Neovim**, **tmux**, **herdr**, an
 
 - [stow](https://www.gnu.org/software/stow/)
 - [ripgrep](https://github.com/BurntSushi/ripgrep)
+- [jq](https://jqlang.org/) (Claude Code status line)
 - [fd](https://github.com/sharkdp/fd)
 - [git](https://git-scm.com/)
 - [tmux](https://tmux.github.io/)
@@ -114,7 +116,7 @@ That target checks that:
 If you prefer to install dependencies yourself, link the dotfiles with stow:
 
 ```sh
-stow --no-folding -t ~ ghostty herdr nvim tmux
+stow --no-folding -t ~ claude ghostty herdr nvim tmux
 ```
 
 Then bootstrap Neovim plugins once:
